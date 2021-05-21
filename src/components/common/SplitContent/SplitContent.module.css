@@ -1,0 +1,22 @@
+.content {
+    display              : grid;
+    grid-template-columns: 2fr 3fr;
+    height: inherit;
+    min-height: 86vh;
+}
+
+.leftPane, .rightPane {
+    height: inherit;
+}
+
+.leftPane{
+    margin-right: 10px;
+}
+
+.rightPane{
+    margin-left: 10px;
+}
+
+.colored {
+    background-color: white;
+}
