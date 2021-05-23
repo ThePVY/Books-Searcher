@@ -3,7 +3,7 @@ import styled, { css, keyframes } from 'styled-components'
 import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 
-const ShadowDiv = styled(Div)<{ isShown: boolean }>`
+const ShadowDiv = styled.div<{ isShown: boolean }>`
   ${(props) =>
     props.isShown &&
     css`
@@ -21,7 +21,7 @@ const ShadowDiv = styled(Div)<{ isShown: boolean }>`
     NullContainer нужен для того, чтобы ...FlexContainer можно было позиционировать relative
     при этом не влияя на элементы, окружающие ViewPanel
 */
-const NullContainer = styled.div<{ hide: boolean }>`
+const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
   ${(props) =>
     props.hide &&
     css`
@@ -30,11 +30,12 @@ const NullContainer = styled.div<{ hide: boolean }>`
       z-index: 10;
       margin: 0 auto;
     `}
+  display: ${(props) => props.isShown ? 'block' : 'none'};
 `
 
 const ViewArea = styled(Div)<{ fixed: boolean }>`
-  height: 50vh;
-  width: 50vw;
+  height: 700px;
+  width: 900px;
   z-index: 10;
   ${(props) =>
     props.fixed
@@ -52,11 +53,31 @@ const ViewArea = styled(Div)<{ fixed: boolean }>`
           top: 0;
           transform: translate(-50%, 40%);
         `}
+  @media screen and (max-width: 1024px) {
+    height: 700px;
+    width: 700px;
+  }
+  @media screen and (max-width: 768px) {
+    height: 650px;
+    width: 500px;
+  }
+  @media screen and (max-width: 568px) {
+    height: 710px;
+    width: 400px;
+  }
+  @media screen and (max-width: 320px) {
+    height: 500px;
+    width: 280px;
+  }
 `
 
 const hoistAnimation = keyframes`
-    0% { transform: scale3d(.5, .5, .5); }
-    100% { transform: scale3d(1,1,1); }
+  from { 
+    transform: scale3d(.5, .5, .5);
+  }
+  to { 
+    transform: scale3d(1,1,1);
+  }
 `
 
 const ContentArea = styled(FlexContainer)`
@@ -65,10 +86,6 @@ const ContentArea = styled(FlexContainer)`
   position: absolute;
   top: 0;
   z-index: 10;
-  img {
-    max-width: 40vw;
-    max-height: 40vh;
-  }
   animation: ${hoistAnimation} 0.5s 1;
   animation-delay: 0.5;
 `
@@ -91,7 +108,6 @@ interface IViewPanelProps {
   onClose: MouseEventHandler<HTMLDivElement>
 }
 
-
 const ViewPanel: FC<IViewPanelProps> = ({
   isShown,
   content,
@@ -104,7 +120,7 @@ const ViewPanel: FC<IViewPanelProps> = ({
   return (
     <>
       <ShadowDiv onClick={onClose} isShown={isShown} />
-      <NullContainer hide={!fixed}>
+      <NullContainer hide={!fixed} isShown={isShown}>
         <ViewArea fixed={fixed}>
           <ContentArea jstfCnt="space-between" algnItems="center">
             {multiple && <LeafContainer onClick={onPrev} />}

@@ -31,6 +31,7 @@ interface IInputProps extends IInputRF {
   placeholder: string
   disabled: boolean
   color: string
+  width: string
 }
 
 type InputTypeT = Readonly<Partial<IInputProps>>
@@ -38,7 +39,7 @@ type InputTypeT = Readonly<Partial<IInputProps>>
 const Input = styled.input<InputTypeT>`
   min-width: fit-content;
   &:not(input[type='checkbox']) {
-    width: 100%;
+    width: ${props => props.width || '100%'}
   }
   background-color: rgb(252, 252, 252);
   color: ${({ color }) => color || 'rgb(118, 124, 124)'};

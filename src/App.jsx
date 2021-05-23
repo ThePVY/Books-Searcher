@@ -18,6 +18,9 @@ const AppWrapper = styled.div`
 `;
 
 function App() {
+
+  console.log('App rendered')
+
   return (
     <AppWrapper>
       <Header />

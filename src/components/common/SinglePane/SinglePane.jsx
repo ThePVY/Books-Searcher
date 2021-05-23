@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     grid-template-columns: 0fr minmax(250px, 1fr) 0fr;
   }
 
-  height: ${props => (props.fixedHeight ? '86vh' : 'auto')};
+  height: ${props => (props.fixedHeight ? '86vh' : 'fit-content')};
 `
 
 const ContentArea = styled.div`

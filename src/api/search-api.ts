@@ -10,11 +10,21 @@ export interface DocData {
   has_fulltext: boolean
   title: string
   isbn: string[]
+  author_name: string[]
 }
 
 class SearchAPI {
-  getBooks (queryString: string): Promise<SearchData> {
-    return axios.get<SearchData>(`http://openlibrary.org/search.json?q=${queryString}`).then(({ data }) => data)
+  getBooks (search: string): Promise<SearchData> {
+    const queryString = search.split(' ').join('+')
+    return axios
+      .get<SearchData>(`http://openlibrary.org/search.json?q=${queryString}`)
+      .then(({ data }) => {
+        return data
+      })
+      .catch((error) => {
+        console.log(error)
+        return null as SearchData
+      })
   }
 }
 

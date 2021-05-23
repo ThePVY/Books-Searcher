@@ -24,6 +24,7 @@
     }
   },
   "rules": {
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "camelcase": "off",
     "semi": "off",
     "indent": "off",

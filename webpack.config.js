@@ -2,6 +2,19 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+
+const styledComponentsTransformer = createStyledComponentsTransformer();
+
+const typescriptLoader = {
+  test: /\.ts(x)?$/,
+  loader: 'ts-loader',
+  exclude: /node_modules/,
+  options: {
+    getCustomTransformers: () => ({ before: [styledComponentsTransformer] })
+  }
+}
+
 const babelLoader = {
   test: /\.js(x)?$/,
   exclude: /(node_modules|bower_components)/,
@@ -102,11 +115,7 @@ module.exports = {
       },
       babelLoader,
       ...stylesLoaders,
-      {
-        test: /\.ts(x)?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
+      typescriptLoader,
       {
         test: /\.(png|jpe?g|gif)$/i,
         use: ['file-loader'],

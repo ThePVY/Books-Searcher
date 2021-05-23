@@ -9,6 +9,7 @@ export interface IDiv {
   textAlign: string
   color: string
   zIndex: string
+  border: string
 }
 
 type DivT = Readonly<Partial<IDiv>>
@@ -23,6 +24,7 @@ const Div = styled.div<DivT>`
   text-align: ${(props) => props.textAlign || 'left'};
   color: ${(props) => props.color || 'rgb(72, 78, 78)'};
   z-index: ${(props) => props.zIndex || 'unset'};
+  border: ${props => props.border || 'auto'};
 `
 
 export default Div

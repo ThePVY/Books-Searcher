@@ -6,7 +6,7 @@ interface IProps {
 }
 
 const Preloader: FC<IProps> = ({ isFetching }) => (
-  <span>{isFetching ? <img src={preloader} alt='' /> : ''}</span>
+  <>{isFetching ? <img src={preloader} alt='' /> : ''}</>
 )
 
 export default Preloader
