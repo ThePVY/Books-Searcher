@@ -87,7 +87,7 @@ export default PagesList
 const FlexForm = styled.form`
   display: flex;
   justify-content: space-between;
-  width: 65%;
+  width: 60%;
 `
 
 const PageSearchForm = ({ onSubmit }) => {
@@ -112,7 +112,7 @@ const PageSearchForm = ({ onSubmit }) => {
 
   return (
     <FlexForm onSubmit={formik.handleSubmit}>
-      <Div width="60%">
+      <Div width="70%">
         <Input
           name="page"
           type="search"
@@ -122,7 +122,7 @@ const PageSearchForm = ({ onSubmit }) => {
           error={formik.touched.page && formik.errors.page}
         />
       </Div>
-      <Div width="30%">
+      <Div width="25%">
         <Button type="submit" disabled={!!formik.errors.page}>
           Go!
         </Button>

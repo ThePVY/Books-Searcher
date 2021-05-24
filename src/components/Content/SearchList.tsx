@@ -1,3 +1,4 @@
+import { IEditionInfo } from '@/redux/app-reducer'
 import { FC, useState } from 'react'
 import styled from 'styled-components'
 import FlexContainer from '../common/FlexContainer'
@@ -34,15 +35,27 @@ const CenteringDiv = styled.div`
   text-align: center;
 `
 
-function booksNotFound(items: ContentPropsT['itemsOnPage'], searchCount: number) {
+function booksNotFound (items: ContentPropsT['itemsOnPage'], searchCount: number) {
   return !items.length && searchCount
 }
 
-const SearchList: FC<IOwnProps> = (props) => {
+const SearchList: FC<IOwnProps> = props => {
   const { itemsOnPage, pagesNum, currentPage, onPageClick, searchCount, lastQuery } = props
   const [viewMode, setViewMode] = useState(false)
-  const [viewContent, setViewContent] = useState(null as JSX.Element)
+  const [viewContent, setViewContent] = useState(null as IEditionInfo)
   const closeViewPanel = () => setViewMode(false)
+
+  const getNext = (item: IEditionInfo): IEditionInfo => {
+    const nextIdx = itemsOnPage.indexOf(item) + 1
+    return nextIdx === itemsOnPage.length - 1 ? itemsOnPage[0] : itemsOnPage[nextIdx]
+  }
+  const getPrev = (item: IEditionInfo): IEditionInfo => {
+    const nextIdx = itemsOnPage.indexOf(item) - 1
+    return nextIdx === -1 ? itemsOnPage[itemsOnPage.length - 1] : itemsOnPage[nextIdx]
+  }
+  const onNextClick = () => setViewContent(getNext(viewContent))
+  const onPrevClick = () => setViewContent(getPrev(viewContent))
+
   return (
     <>
       {itemsOnPage.length !== 0 ? (
@@ -53,17 +66,28 @@ const SearchList: FC<IOwnProps> = (props) => {
         <CenteringDiv>No books found on "{lastQuery}"</CenteringDiv>
       ) : (
         <FlexSearchList>
-          {itemsOnPage.map((item) => {
+          {itemsOnPage.map(item => {
             if (!item) return null
             const onSnippetClick = () => {
-              setViewContent(<InfoPane edition={item} />)
+              setViewContent(item)
               setViewMode(true)
             }
             return <BookSnippet key={item.isbn} bookInfo={item} onClick={onSnippetClick} />
           })}
         </FlexSearchList>
       )}
-      <ViewPanel content={viewContent} isShown={viewMode} onClose={closeViewPanel} fixed />
+      {itemsOnPage.length !== 0 ? (
+        <PagesList pagesCount={pagesNum} selectedPage={currentPage} onPageClick={onPageClick} />
+      ) : null}
+      <ViewPanel
+        content={<InfoPane edition={viewContent} />}
+        isShown={viewMode}
+        onClose={closeViewPanel}
+        fixed
+        multiple
+        onNext={onNextClick}
+        onPrev={onPrevClick}
+      />
     </>
   )
 }

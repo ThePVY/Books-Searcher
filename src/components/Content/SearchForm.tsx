@@ -40,11 +40,8 @@ const SearchForm: FC<IProps> = ({ getAllBooks }) => {
 
   return (
     <FlexSearchForm onSubmit={formik.handleSubmit}>
-      <Div width="75%">
+      <Div width="100%">
         <Input type="search" name="search" value={formik.values.search} onChange={handleChange} />
-      </Div>
-      <Div width="20%">
-        <Button type="submit">Search</Button>
       </Div>
     </FlexSearchForm>
   )

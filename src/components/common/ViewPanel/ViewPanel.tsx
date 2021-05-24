@@ -4,7 +4,7 @@ import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 
 const ShadowDiv = styled.div<{ isShown: boolean }>`
-  ${(props) =>
+  ${props =>
     props.isShown &&
     css`
       background-color: rgba(0, 0, 0, 0.5);
@@ -22,7 +22,7 @@ const ShadowDiv = styled.div<{ isShown: boolean }>`
     при этом не влияя на элементы, окружающие ViewPanel
 */
 const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
-  ${(props) =>
+  ${props =>
     props.hide &&
     css`
       width: 0;
@@ -30,14 +30,14 @@ const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
       z-index: 10;
       margin: 0 auto;
     `}
-  display: ${(props) => props.isShown ? 'block' : 'none'};
+  display: ${props => (props.isShown ? 'block' : 'none')};
 `
 
 const ViewArea = styled(Div)<{ fixed: boolean }>`
-  height: 700px;
   width: 900px;
+  height: 700px;
   z-index: 10;
-  ${(props) =>
+  ${props =>
     props.fixed
       ? css`
           position: fixed;
@@ -54,20 +54,21 @@ const ViewArea = styled(Div)<{ fixed: boolean }>`
           transform: translate(-50%, 40%);
         `}
   @media screen and (max-width: 1024px) {
-    height: 700px;
     width: 700px;
+    height: 700px;
   }
   @media screen and (max-width: 768px) {
-    height: 650px;
     width: 500px;
+    height: 650px;
   }
   @media screen and (max-width: 568px) {
+    width: 320px;
+    max-width: 100vw;
     height: 710px;
-    width: 400px;
   }
   @media screen and (max-width: 320px) {
-    height: 500px;
     width: 280px;
+    height: 500px;
   }
 `
 
@@ -90,11 +91,38 @@ const ContentArea = styled(FlexContainer)`
   animation-delay: 0.5;
 `
 
-const LeafContainer = styled(Div)`
+const LeftLeafContainer = styled(Div)`
   width: 5vw;
+  min-width: 2.5rem;
   background-color: rgba(0, 0, 0, 0.6);
   &:hover {
     background-color: rgba(0, 0, 0, 0.4);
+  }
+  @media screen and (max-width: 568px) {
+    background-color: rgba(0, 0, 0, 0);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+`
+const RightLeafContainer = styled(Div)`
+  width: 5vw;
+  min-width: 2.5rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  @media screen and (max-width: 568px) {
+    background-color: rgba(0, 0, 0, 0);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 `
 
@@ -122,10 +150,10 @@ const ViewPanel: FC<IViewPanelProps> = ({
       <ShadowDiv onClick={onClose} isShown={isShown} />
       <NullContainer hide={!fixed} isShown={isShown}>
         <ViewArea fixed={fixed}>
-          <ContentArea jstfCnt="space-between" algnItems="center">
-            {multiple && <LeafContainer onClick={onPrev} />}
+          <ContentArea jstfCnt='space-between' algnItems='center'>
+            {multiple && <LeftLeafContainer onClick={onPrev} />}
             <Div>{content}</Div>
-            {multiple && <LeafContainer onClick={onNext} />}
+            {multiple && <RightLeafContainer onClick={onNext} />}
           </ContentArea>
         </ViewArea>
       </NullContainer>
