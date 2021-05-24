@@ -2,6 +2,7 @@ import Footer from "./components/Footer/Footer";
 import Content from "./components/Content/Content";
 import styled from "styled-components";
 import Header from "./components/Header/Header";
+import { FC } from "react";
 
 const AppWrapper = styled.div`
   background-color: rgb(236, 236, 236);
@@ -17,7 +18,7 @@ const AppWrapper = styled.div`
     "footer";
 `;
 
-function App() {
+const App: FC = () => {
 
   console.log('App rendered')
 

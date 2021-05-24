@@ -5,6 +5,7 @@ import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 import styled from 'styled-components'
 import Input from '../Input'
+import { FC, useEffect } from 'react'
 
 
 const className = 'pages-list__selected-page'
@@ -24,12 +25,19 @@ const FlexWrapper = styled(FlexContainer).attrs({ className })`
   }
 `
 
-const PagesList = (props) => {
+interface IPagesListProps {
+  pagesCount: number
+  selectedPage: number
+  isFetching?: boolean
+  onPageClick: (page: number) => void
+}
+
+const PagesList: FC<IPagesListProps> = (props) => {
   const { pagesCount, selectedPage, isFetching = false } = props
   const { onPageClick } = props
 
-  const handleSubmit = (jsonObj) => {
-    onPageClick(jsonObj.page)
+  const handleSubmit = (jsonObj: ISearchData) => {
+    onPageClick(Number(jsonObj.page))
   }
 
   let pagesArr = [
@@ -45,7 +53,7 @@ const PagesList = (props) => {
     <FlexWrapper>
       {selectedPage >= 4 ? (
         <>
-          <span role="button" tabIndex="0" onClick={() => onPageClick(1)}>
+          <span role="button" tabIndex={0} onClick={() => onPageClick(1)}>
             1
           </span>{' '}
           <span>...</span>
@@ -57,7 +65,7 @@ const PagesList = (props) => {
         return (
           <span
             role="button"
-            tabIndex="0"
+            tabIndex={0}
             key={p}
             onClick={() => onPageClick(p)}
             className={selectedPage === p ? className : undefined}
@@ -69,7 +77,7 @@ const PagesList = (props) => {
       {selectedPage <= pagesCount - 3 ? (
         <>
           <span>...</span>
-          <span role="button" tabIndex="0" onClick={() => onPageClick(pagesCount)}>
+          <span role="button" tabIndex={0} onClick={() => onPageClick(pagesCount)}>
             {pagesCount}
           </span>
         </>
@@ -90,18 +98,30 @@ const FlexForm = styled.form`
   width: 60%;
 `
 
-const PageSearchForm = ({ onSubmit }) => {
+interface ISearchData {
+  page: string
+}
+
+interface IPagesSearchFormProps {
+  onSubmit: (values: ISearchData) => void
+}
+
+const PageSearchForm: FC<IPagesSearchFormProps> = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues: {
       page: ''
     },
     onSubmit: (values) => {
       onSubmit(values)
-      formik.setValues(formik.initialValues)
+      formik.resetForm()
+      formik.setFieldTouched('page', true, true)
     },
     validate: (values) => {
-      const errors = {}
-      if (/^[^0-9]/.test(values.page)) {
+      const errors = {} as ISearchData
+      if(!values.page) {
+        errors.page = 'Required'
+      }
+      else if (/^[^0-9]/.test(values.page)) {
         errors.page = 'Use only numbers 0-9'
       } else if (values.page === '0') {
         errors.page = 'Page 0 are not valid'
@@ -110,6 +130,10 @@ const PageSearchForm = ({ onSubmit }) => {
     }
   })
 
+  useEffect(() => {
+    formik.setFieldTouched('page', true, true)
+  }, [])
+
   return (
     <FlexForm onSubmit={formik.handleSubmit}>
       <Div width="70%">
@@ -117,9 +141,9 @@ const PageSearchForm = ({ onSubmit }) => {
           name="page"
           type="search"
           placeholder="Enter page"
+          value={formik.values.page}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.page && formik.errors.page}
         />
       </Div>
       <Div width="25%">

@@ -1,6 +1,7 @@
+import { FC } from 'react'
 import styled from 'styled-components'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ fixedHeight: boolean }>`
   min-height: 86vh;
   display: grid;
   grid-template-columns: 1fr minmax(900px, 8fr) 1fr;
@@ -26,7 +27,11 @@ const ContentArea = styled.div`
   height: 100%;
 `
 
-const SinglePane = ({ children, fixedHeight = false }) => {
+interface ISinglePaneProps {
+  fixedHeight?: boolean
+}
+
+const SinglePane: FC<ISinglePaneProps> = ({ children, fixedHeight = false }) => {
   return (
     <Wrapper fixedHeight={fixedHeight}>
       <div />

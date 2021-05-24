@@ -1,9 +1,11 @@
+import { FC } from 'react'
 import styled from 'styled-components'
 import Div from '../common/Div'
 
-const Wrapper = styled.div`
+const FooterWrapper = styled(Div)`
   background-color: rgb(245, 245, 245);
-  grid-area: header;
+  grid-area: footer;
+  text-align: center;
   height: 6vh;
   div {
     position: relative;
@@ -13,14 +15,12 @@ const Wrapper = styled.div`
   }
 `
 
-const Header = () => {
+const Footer: FC = () => {
   return (
-    <Wrapper>
-      <Div width='fit-content' height='fit-content'>
-        SEARCH BOOKS WITH EASE
-      </Div>
-    </Wrapper>
+    <FooterWrapper>
+      <div>FOR PORTFOLIO</div>
+    </FooterWrapper>
   )
 }
 
-export default Header
+export default Footer

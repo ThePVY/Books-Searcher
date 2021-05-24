@@ -1,4 +1,3 @@
-import { IInputRF } from '@/types/form-types'
 import styled from 'styled-components'
 
 export enum InputType {
@@ -26,7 +25,7 @@ export enum InputType {
   'week',
 }
 
-interface IInputProps extends IInputRF {
+interface IInputProps {
   type: keyof typeof InputType
   placeholder: string
   disabled: boolean

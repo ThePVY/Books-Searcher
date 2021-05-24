@@ -1,7 +1,6 @@
-import { IInputRF } from '@/types/form-types'
 import styled from 'styled-components'
 
-interface ITextareaProps extends IInputRF {
+interface ITextareaProps {
   type: string
   placeholder: string
   disabled: boolean

@@ -1,10 +1,11 @@
 import { ItemTypeOf } from '@/types/common-types'
-import { FC } from 'react'
+import { FC, ReactEventHandler, useState } from 'react'
 import styled from 'styled-components'
 import Div from '../common/Div'
 import FlexContainer from '../common/FlexContainer'
 import Image from '../common/Image'
 import { ContentPropsT } from './Content'
+import defaultCover from '@/images/default-cover.jpg'
 
 const InfoPanelWrapper = styled.div`
   width: 100%;
@@ -80,34 +81,41 @@ interface IInfoPaneProps {
 }
 
 const InfoPane: FC<IInfoPaneProps> = ({ edition }) => {
+  const [srcState, setSrcState] = useState('')
+  const imageSrc = srcState || edition?.largeCover
+  const checkSize: ReactEventHandler<HTMLImageElement> = (e) => {
+    if (e.currentTarget.naturalWidth < 10) {
+      setSrcState(defaultCover)
+    }
+  }
   return (
     <InfoPanelWrapper>
       <ImageWrapper>
-        <Image src={edition?.largeCover} alt='' />
+        <Image onLoad={checkSize} src={imageSrc} alt="" />
       </ImageWrapper>
       <FlexInfo>
         <FlexInfoCell>
-          <Div width='4rem'>Author:</Div>
+          <Div width="4rem">Author:</Div>
           <div>{edition?.author}</div>
         </FlexInfoCell>
         <FlexInfoCell>
-          <Div width='4rem'>Title:</Div>
+          <Div width="4rem">Title:</Div>
           <div>{edition?.title}</div>
         </FlexInfoCell>
         <FlexInfoCell>
-          <Div width='4rem'>Pages:</Div>
+          <Div width="4rem">Pages:</Div>
           <div>{edition?.number_of_pages}</div>
         </FlexInfoCell>
         <FlexInfoCell>
-          <Div width='4rem'>Publisher:</Div>
+          <Div width="4rem">Publisher:</Div>
           <div>{edition?.publishers}</div>
         </FlexInfoCell>
         <FlexInfoCell>
-          <Div width='4rem'>Publish date:</Div>
+          <Div width="4rem">Publish date:</Div>
           <div>{edition?.publish_date}</div>
         </FlexInfoCell>
         <FlexInfoCell>
-          <Div width='4rem'>ISBN:</Div>
+          <Div width="4rem">ISBN:</Div>
           <div>{edition?.isbn}</div>
         </FlexInfoCell>
       </FlexInfo>
