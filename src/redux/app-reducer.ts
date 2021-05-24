@@ -2,6 +2,7 @@ import booksAPI, { BookData } from '@/api/books-api'
 import { getCoverUrl } from '@/api/covers-api'
 import searchAPI, { SearchData } from '@/api/search-api'
 import { ActionT } from '@/types/common-types'
+import { checkAndParse, useSessionStorage } from '@/utils/utils'
 import { ThunkAction } from 'redux-thunk'
 import { RootStateT } from './store-redux'
 
@@ -93,6 +94,7 @@ export const thunkCreator = {
       dispatch(thunkCreator.getItemsOnPage(1))
       dispatch(actionCreator.setLastQuery(search))
       dispatch(actionCreator.setSearching(false))
+      useSessionStorage(getState().app)
     }
   },
   getItemsOnPage(page: number): ThunkActionT {
@@ -102,6 +104,9 @@ export const thunkCreator = {
       dispatch(actionCreator.setCurrentPage(page))
       dispatch(actionCreator.setItemsOnPage(itemsOnPage))
       dispatch(thunkCreator.getAdditionalInfo())
+      useSessionStorage({
+        currentPage: page,
+      })
     }
   },
   getAdditionalInfo(): ThunkActionT {
@@ -114,6 +119,7 @@ export const thunkCreator = {
       dispatch(actionCreator.setAdditionalInfo(data))
       dispatch(actionCreator.setCoverM(mediumCovers))
       dispatch(actionCreator.setCoverL(largeCovers))
+      useSessionStorage({ itemsOnPage: getState().app.itemsOnPage })
     }
   }
 }
@@ -165,14 +171,14 @@ export interface IEditionInfo {
 }
 
 const initialState = {
-  allBooks: [] as IEditionInfo[],
+  allBooks: (checkAndParse('allBooks') || []) as IEditionInfo[],
   pageSize: 20,
-  pagesNum: undefined as number,
-  currentPage: undefined as number,
-  itemsOnPage: [] as IEditionInfo[],
+  pagesNum: checkAndParse('pagesNum') as number,
+  currentPage: checkAndParse('currentPage') as number,
+  itemsOnPage: (checkAndParse('itemsOnPage') || []) as IEditionInfo[],
   searching: false,
-  lastQuery: undefined as string,
-  searchCount: 0
+  lastQuery: checkAndParse('lastQuery') as string,
+  searchCount: (checkAndParse('lastQuery') || 0) as number
 }
 export type AppStateT = typeof initialState
 
