@@ -10,6 +10,10 @@ import SinglePane from '../common/SinglePane/SinglePane'
 import SearchForm from './SearchForm'
 import SearchList from './SearchList'
 
+interface IOwnProps {
+  subscribeHint?: (fn: () => void) => void
+}
+
 interface IStateProps {
   pageSize: RootStateT['app']['pageSize']
   pagesNum: RootStateT['app']['pagesNum']
@@ -18,11 +22,16 @@ interface IStateProps {
   searching: RootStateT['app']['searching']
   lastQuery: RootStateT['app']['lastQuery']
   searchCount: RootStateT['app']['searchCount']
+  uniqueTitles: RootStateT['app']['uniqueTitles']
 }
 
-type DispatchPropsT = typeof thunkCreator
+interface IDispatchProps {
+  getAllBooks: (search: string) => Promise<void>
+  getItemsOnPage: (page: number) => void
+  getAdditionalInfo: () => Promise<void>
+}
 
-export type ContentPropsT = IStateProps & DispatchPropsT
+export type ContentPropsT = IOwnProps & IStateProps & IDispatchProps
 
 const ContentWrapper = styled.div`
   box-sizing: border-box;
@@ -40,15 +49,24 @@ const CenteringDiv = styled.div`
   transform: translate(-50%, -50%);
 `
 
-const Content: FC<ContentPropsT> = (props) => {
-  const { pageSize, pagesNum, currentPage, itemsOnPage, searching, searchCount, lastQuery } = props
-  const { getAllBooks, getItemsOnPage } = props
+const Content: FC<ContentPropsT> = props => {
+  const {
+    pageSize,
+    pagesNum,
+    currentPage,
+    itemsOnPage,
+    searching,
+    searchCount,
+    lastQuery,
+    uniqueTitles
+  } = props
+  const { getAllBooks, getItemsOnPage, subscribeHint } = props
 
   const onPageClick = (page: number) => {
     getItemsOnPage(page)
   }
 
-  const searchFormProps = { getAllBooks, lastQuery }
+  const searchFormProps = { subscribeHint, getAllBooks, lastQuery, uniqueTitles }
   const searchListMethods = { onPageClick }
   const searchListState = { pageSize, pagesNum, currentPage, itemsOnPage, searchCount, lastQuery }
   return (
@@ -74,11 +92,12 @@ const mapStateToProps = (state: RootStateT): IStateProps => ({
   itemsOnPage: selector.getItemsOnPage(state),
   searching: selector.getIsSearching(state),
   lastQuery: selector.getLastQuery(state),
-  searchCount: selector.getSearchCount(state)
+  searchCount: selector.getSearchCount(state),
+  uniqueTitles: selector.getUniqueTitles(state)
 })
 
-const dispatchToProps: DispatchPropsT = {
-  ...thunkCreator
-}
+const dispatchToProps = thunkCreator
 
-export default connect(mapStateToProps, dispatchToProps)(Content)
+const connector = connect(mapStateToProps, dispatchToProps)
+
+export default connector(Content)

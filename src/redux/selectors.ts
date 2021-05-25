@@ -23,6 +23,9 @@ const selector = {
   },
   getSearchCount(state: RootStateT): number {
     return state.app.searchCount
+  },
+  getUniqueTitles(state: RootStateT): string[] {
+    return state.app.uniqueTitles
   }
 }
 

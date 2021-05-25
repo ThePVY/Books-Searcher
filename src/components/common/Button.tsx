@@ -27,7 +27,9 @@ const Button = styled.button<PropsT>`
   flex: ${(props) => props.flex || 'auto'};
 
   &:disabled {
-    opacity: 0.4;
+    background-color: rgba(0, 0, 0, 0.04);
+    color: rgba(0, 0, 0, 0.3);
+    border-color: (0, 0, 0, 0.04);
     cursor: default;
   }
 `

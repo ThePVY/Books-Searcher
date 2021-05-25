@@ -79,10 +79,10 @@ export const actionCreator = {
   }
 }
 
-type ThunkActionT = ThunkAction<void, RootStateT, never, AppAction>
+type ThunkActionT<R = void> = ThunkAction<R, RootStateT, never, AppAction>
 
 export const thunkCreator = {
-  getAllBooks(search: string): ThunkActionT {
+  getAllBooks(search: string): ThunkActionT<Promise<void>> {
     return async (dispatch, getState) => {
       dispatch(actionCreator.setSearching(true))
       dispatch(actionCreator.incSearchCount())
@@ -117,7 +117,7 @@ export const thunkCreator = {
       })
     }
   },
-  getAdditionalInfo(): ThunkActionT {
+  getAdditionalInfo(): ThunkActionT<Promise<void>> {
     return async (dispatch, getState) => {
       const { itemsOnPage } = getState().app
       if (itemsOnPage === []) return
@@ -137,7 +137,7 @@ function retrieveBooksInfo(searchResponse: SearchData): IEditionInfo[] {
   const allBooks = {} as IBooksInfo
   docs.forEach((doc) => {
     if (!doc.has_fulltext || !doc.isbn) return
-    const author = doc.author_name[0]
+    const author = doc.author_name && doc.author_name[0] || 'Unknown author'
     const { title } = doc
     doc.isbn.forEach((isbn) => {
       if (allBooks[isbn] || isbn.length <= 9) return

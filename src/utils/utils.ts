@@ -14,3 +14,18 @@ export const checkAndParse = (str: string): unknown => {
 export function throttle(fn: () => void, ms: number): ReturnType<typeof setTimeout> {
   return setTimeout(() => fn(), ms)
 }
+
+
+export class Subscriber {
+  observer: () => void
+
+  constructor() {
+    this.observer = null as () => void
+    this.subscribe = this.subscribe.bind(this)
+  }
+
+  subscribe(fn: () => void): void {
+    this.observer = fn
+  }
+
+}
