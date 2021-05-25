@@ -13,6 +13,7 @@ const className = 'pages-list__selected-page'
 const FlexWrapper = styled(FlexContainer).attrs({ className })`
   width: 50%;
   min-width: 250px;
+  max-width: 400px;
   height: fit-content;
   justify-content: space-between;
   align-items: center;

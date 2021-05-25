@@ -11,7 +11,7 @@ const HintsWrapper = styled.div<{ isShown: boolean }>`
   top: 1.5rem;
   left: 0;
 
-  max-height: 200px;
+  max-height: 50vh;
   background-color: white;
   padding: .5rem;
   border: 1px solid grey;
@@ -26,8 +26,8 @@ const HintContainer = styled.div`
   width: 100%;
   height: 2.5rem;
   margin: .2rem 0;
-  border: 1px solid grey;
-  border-radius: 5px;
+  /* border: 1px solid grey;
+  border-radius: 5px; */
   background-color: rgb(255, 255, 255);
   &:hover {
     background-color: rgb(236, 238, 238);
@@ -60,10 +60,13 @@ interface IHintsPanelProps {
 const HintsPanel: FC<IHintsPanelProps> = ({ hints, isShown = false, onHintClick }) => {
   return (
     <HintsWrapper isShown={hints.length !== 0 && isShown}>
-      {hints.map(hint => (
-        <HintContainer key={hint} onClick={() => onHintClick(hint)}>
-          <Hint>{hint}</Hint>
-        </HintContainer>
+      {hints.map((hint) => (
+        <div key={hint}>
+          <HintContainer onClick={() => onHintClick(hint)}>
+            <Hint>{hint}</Hint>
+          </HintContainer>
+          <hr />
+        </div>
       ))}
     </HintsWrapper>
   )
