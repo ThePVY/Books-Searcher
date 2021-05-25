@@ -33,7 +33,7 @@ const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
   display: ${props => (props.isShown ? 'block' : 'none')};
 `
 
-const ViewArea = styled(Div)<{ fixed: boolean }>`
+const ViewArea = styled.div<{ fixed: boolean }>`
   width: 900px;
   height: 700px;
   z-index: 10;
@@ -67,7 +67,7 @@ const ViewArea = styled(Div)<{ fixed: boolean }>`
     height: 710px;
   }
   @media screen and (max-width: 320px) {
-    width: 280px;
+    width: 250px;
     height: 500px;
   }
 `
@@ -83,6 +83,7 @@ const hoistAnimation = keyframes`
 
 const ContentArea = styled(FlexContainer)`
   background-color: white;
+  border-radius: 20px;
   min-height: max-content;
   position: absolute;
   top: 0;
@@ -95,6 +96,7 @@ const LeftLeafContainer = styled(Div)`
   width: 5vw;
   min-width: 2.5rem;
   background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
   &:hover {
     background-color: rgba(0, 0, 0, 0.4);
   }
@@ -112,6 +114,7 @@ const RightLeafContainer = styled(Div)`
   width: 5vw;
   min-width: 2.5rem;
   background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
   &:hover {
     background-color: rgba(0, 0, 0, 0.4);
   }

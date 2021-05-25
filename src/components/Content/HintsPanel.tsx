@@ -5,7 +5,7 @@ const HintsWrapper = styled.div<{ isShown: boolean }>`
   display: ${props => (props.isShown ? 'block' : 'none')};
   width: 100%;
   height: fit-content;
-  min-width: 300px;
+  min-width: 250px;
   margin: 1rem auto;
   position: absolute;
   top: 1.5rem;
@@ -33,6 +33,11 @@ const HintContainer = styled.div`
     background-color: rgb(236, 238, 238);
   }
   cursor: pointer;
+
+  @media screen and (max-width: 568px) {
+    height: 3.5rem;
+    text-align: center;
+  }
 `
 
 export const hintClassName = 'hint-panel__hint-class'

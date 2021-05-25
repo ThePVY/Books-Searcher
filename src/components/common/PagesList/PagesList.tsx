@@ -11,7 +11,8 @@ import { FC, useEffect } from 'react'
 const className = 'pages-list__selected-page'
 
 const FlexWrapper = styled(FlexContainer).attrs({ className })`
-  width: fit-content;
+  width: 50%;
+  min-width: 250px;
   height: fit-content;
   justify-content: space-between;
   align-items: center;
@@ -84,7 +85,7 @@ const PagesList: FC<IPagesListProps> = (props) => {
       ) : (
         ''
       )}
-      <PageSearchForm onSubmit={handleSubmit} />
+      <PageSearchForm onSubmit={handleSubmit} pagesCount={pagesCount} />
       <Preloader isFetching={isFetching} />
     </FlexWrapper>
   )
@@ -104,9 +105,10 @@ interface ISearchData {
 
 interface IPagesSearchFormProps {
   onSubmit: (values: ISearchData) => void
+  pagesCount: number
 }
 
-const PageSearchForm: FC<IPagesSearchFormProps> = ({ onSubmit }) => {
+const PageSearchForm: FC<IPagesSearchFormProps> = ({ onSubmit, pagesCount }) => {
   const formik = useFormik({
     initialValues: {
       page: ''
@@ -125,6 +127,8 @@ const PageSearchForm: FC<IPagesSearchFormProps> = ({ onSubmit }) => {
         errors.page = 'Use only numbers 0-9'
       } else if (values.page === '0') {
         errors.page = 'Page 0 are not valid'
+      } else if (Number(values.page) > pagesCount) {
+        errors.page = 'Input page could not be larger, then total number of pages'
       }
       return errors
     }

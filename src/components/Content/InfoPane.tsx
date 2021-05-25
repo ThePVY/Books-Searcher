@@ -58,6 +58,13 @@ const ImageWrapper = styled.div`
       height: 320px;
     }
   }
+  @media screen and (max-width: 300px) {
+    width: fit-content;
+    img {
+      max-width: 200px;
+      max-height: 300px;
+    }
+  }
 `
 
 const FlexInfo = styled(FlexContainer)`
@@ -98,26 +105,32 @@ const InfoPane: FC<IInfoPaneProps> = ({ edition }) => {
           <Div width="4rem">Author:</Div>
           <div>{edition?.author}</div>
         </FlexInfoCell>
+        <hr/>
         <FlexInfoCell>
           <Div width="4rem">Title:</Div>
           <div>{edition?.title}</div>
         </FlexInfoCell>
+        <hr/>
         <FlexInfoCell>
           <Div width="4rem">Pages:</Div>
           <div>{edition?.number_of_pages}</div>
         </FlexInfoCell>
+        <hr/>
         <FlexInfoCell>
           <Div width="4rem">Publisher:</Div>
           <div>{edition?.publishers}</div>
         </FlexInfoCell>
+        <hr/>
         <FlexInfoCell>
           <Div width="4rem">Publish date:</Div>
           <div>{edition?.publish_date}</div>
         </FlexInfoCell>
+        <hr/>
         <FlexInfoCell>
           <Div width="4rem">ISBN:</Div>
           <div>{edition?.isbn}</div>
         </FlexInfoCell>
+        <hr/>
       </FlexInfo>
     </InfoPanelWrapper>
   )

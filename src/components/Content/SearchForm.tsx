@@ -9,7 +9,7 @@ import HintsPanel from './HintsPanel'
 
 const SearchFormWrapper = styled.form`
   width: 50%;
-  min-width: 300px;
+  min-width: 250px;
   margin: 1rem auto;
   position: relative;
 `
@@ -62,6 +62,7 @@ const SearchForm: FC<IProps> = ({ getAllBooks, subscribeHint, lastQuery = '', un
           value={formik.values.search}
           onChange={handleChange}
           onFocus={handleFocus}
+          autoFocus
         />
       </Div>
       <HintsPanel isShown={formik.values.search && hintsMode} hints={uniqueTitles} onHintClick={onHintClick} />

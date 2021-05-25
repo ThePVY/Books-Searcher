@@ -1,7 +1,6 @@
 import { hot } from 'react-hot-loader/root'
 import { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createGlobalStyle } from 'styled-components'
 import {} from 'styled-components/cssprop'
@@ -32,12 +31,10 @@ const GlobalStyles = createGlobalStyle`
 `
 
 const RootContainer = () => (
-  <HashRouter hashType="slash">
     <Provider store={store}>
       <App />
       <GlobalStyles />
     </Provider>
-  </HashRouter>
 )
 
 const render = (Component: FC) => {

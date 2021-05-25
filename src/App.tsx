@@ -11,7 +11,7 @@ const AppWrapper = styled.div`
   background-color: rgb(236, 236, 236);
   z-index: 100;
   min-height: 100%;
-  min-width: 300px;
+  min-width: 250px;
   display: grid;
   grid-template-rows: 6vh 1fr 6vh;
   grid-template-columns: 1fr;
