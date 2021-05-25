@@ -7,6 +7,7 @@ import { ThunkAction } from 'redux-thunk'
 import { RootStateT } from './store-redux'
 
 const SET_ALL_BOOKS = 'app/SET_ALL_BOOKS'
+const SET_UNIQUE_TITLES = 'app/SET_UNIQUE_TITLES'
 const SET_PAGES_NUM = 'app/SET_PAGES_NUM'
 const SET_CURRENT_PAGE = 'app/SET_CURRENT_PAGE'
 const SET_ITEMS_ON_PAGE = 'app/SET_ITEMS_ON_PAGE'
@@ -18,6 +19,7 @@ const SET_LAST_QUERY = 'app/SET_LAST_QUERY'
 const INC_SEARCH_COUNT = 'app/INC_SEARCH_COUNT'
 
 type setAllBooksT = ActionT<typeof SET_ALL_BOOKS, IEditionInfo[]>
+type setUniqueTitlesT = ActionT<typeof SET_UNIQUE_TITLES, string[]>
 type setPagesNumT = ActionT<typeof SET_PAGES_NUM, number>
 type setCurrentPageT = ActionT<typeof SET_CURRENT_PAGE, number>
 type setItemsOnPageT = ActionT<typeof SET_ITEMS_ON_PAGE, IEditionInfo[]>
@@ -30,6 +32,7 @@ type incSearchCountT = ActionT<typeof INC_SEARCH_COUNT, number>
 
 type AppAction =
   | setAllBooksT
+  | setUniqueTitlesT
   | setAdditionalInfoT
   | setCoversMT
   | setCoversLT
@@ -43,6 +46,9 @@ type AppAction =
 export const actionCreator = {
   setAllBooks(books: IEditionInfo[]): setAllBooksT {
     return { type: SET_ALL_BOOKS, payload: books }
+  },
+  setUniqueTitles(titles: string[]): setUniqueTitlesT {
+    return { type: SET_UNIQUE_TITLES, payload: titles }
   },
   setPagesNum(pagesNum: number): setPagesNumT {
     return { type: SET_PAGES_NUM, payload: pagesNum }
@@ -87,6 +93,8 @@ export const thunkCreator = {
         return
       }
       const books = retrieveBooksInfo(serchData)
+      const uniqueTitles = getUniqueTitles(books)
+      dispatch(actionCreator.setUniqueTitles(uniqueTitles))
       const { pageSize } = getState().app
       dispatch(actionCreator.setAllBooks(books))
       const pagesNum = Math.ceil(books.length / pageSize)
@@ -139,6 +147,15 @@ function retrieveBooksInfo(searchResponse: SearchData): IEditionInfo[] {
   return Object.values(allBooks)
 }
 
+
+function getUniqueTitles(allBooks: IEditionInfo[]): string[] {
+  const acc = {} as { [title: string]: number }
+  allBooks.forEach((edition) => {
+    acc[edition.title] = acc[edition.title] + 1 || 1
+  })
+  return Object.keys(acc)
+}
+
 function getItemsOnPage(
   allBooks: IEditionInfo[],
   currentPage: number,
@@ -172,6 +189,7 @@ export interface IEditionInfo {
 
 const initialState = {
   allBooks: (checkAndParse('allBooks') || []) as IEditionInfo[],
+  uniqueTitles: (checkAndParse('uniqueTitles') || []) as string[],
   pageSize: 20,
   pagesNum: checkAndParse('pagesNum') as number,
   currentPage: checkAndParse('currentPage') as number,
@@ -186,6 +204,8 @@ export const appReducer = (state = initialState, action: AppAction): AppStateT =
   switch (action.type) {
     case SET_ALL_BOOKS:
       return { ...state, allBooks: action.payload }
+    case SET_UNIQUE_TITLES:
+      return { ...state, uniqueTitles: action.payload }
     case SET_PAGES_NUM:
       return { ...state, pagesNum: action.payload }
     case SET_CURRENT_PAGE:

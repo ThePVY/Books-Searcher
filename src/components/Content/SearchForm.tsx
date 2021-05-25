@@ -1,14 +1,11 @@
+import { throttle } from '@/utils/utils'
 import { useFormik } from 'formik'
 import { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
-import Button from '../common/Button'
 import Div from '../common/Div'
 import Input from '../common/Input'
 import { ContentPropsT } from './Content'
 
-interface IProps {
-  getAllBooks: ContentPropsT['getAllBooks']
-}
 
 const FlexSearchForm = styled.form`
   display: flex;
@@ -20,24 +17,26 @@ const FlexSearchForm = styled.form`
 
 let timeoutId: ReturnType<typeof setTimeout>
 
-const SearchForm: FC<IProps> = ({ getAllBooks }) => {
+interface IProps {
+  lastQuery: string
+  getAllBooks: ContentPropsT['getAllBooks']
+}
+
+const SearchForm: FC<IProps> = ({ getAllBooks, lastQuery = '' }) => {
   const formik = useFormik({
-    initialValues: { search: '' },
+    initialValues: { search: lastQuery },
     onSubmit: (values) => {
       getAllBooks(values.search)
     }
   })
-
   const handleChange: ReactEventHandler<HTMLInputElement> = (e) => {
     formik.handleChange(e)
-
     clearTimeout(timeoutId)
     const search = e.currentTarget.value
     if (search) {
       timeoutId = throttle(() => getAllBooks(search), 1000)
     }
   }
-
   return (
     <FlexSearchForm onSubmit={formik.handleSubmit}>
       <Div width="100%">
@@ -49,8 +48,3 @@ const SearchForm: FC<IProps> = ({ getAllBooks }) => {
 
 export default SearchForm
 
-type DecoratedFn = () => void
-
-function throttle(fn: DecoratedFn, ms: number): ReturnType<typeof setTimeout> {
-  return setTimeout(() => fn(), ms)
-}

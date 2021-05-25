@@ -10,3 +10,7 @@ export const checkAndParse = (str: string): unknown => {
   const item = sessionStorage.getItem(str)
   return item ? JSON.parse(item) : undefined
 }
+
+export function throttle(fn: () => void, ms: number): ReturnType<typeof setTimeout> {
+  return setTimeout(() => fn(), ms)
+}

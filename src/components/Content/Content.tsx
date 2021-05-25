@@ -48,12 +48,13 @@ const Content: FC<ContentPropsT> = (props) => {
     getItemsOnPage(page)
   }
 
+  const searchFormProps = { getAllBooks, lastQuery }
   const searchListMethods = { onPageClick }
   const searchListState = { pageSize, pagesNum, currentPage, itemsOnPage, searchCount, lastQuery }
   return (
     <ContentWrapper>
       <SinglePane>
-        <SearchForm getAllBooks={getAllBooks} />
+        <SearchForm {...searchFormProps} />
         {!searching ? (
           <SearchList {...searchListState} {...searchListMethods} />
         ) : (
