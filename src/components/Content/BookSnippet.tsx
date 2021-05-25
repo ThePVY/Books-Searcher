@@ -15,8 +15,6 @@ interface IBookSnippetProps {
 const BookSnippetWrapper = styled.div`
   width: 250px;
   height: 320px;
-  margin: 1rem;
-  padding: 1rem;
   border: 2px solid transparent;
   border-radius: 10px;
   img {
@@ -35,6 +33,9 @@ const BookSnippetWrapper = styled.div`
   }
   * {
     color: #5f5f5f;
+  }
+  @media screen and (max-width: 768px) {
+    height: 300px;
   }
 `
 

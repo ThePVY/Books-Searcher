@@ -20,6 +20,7 @@ interface IOwnProps {
 
 const FlexSearchList = styled(FlexContainer)`
   height: fit-content;
+  padding: 1rem 0;
   flex-wrap: wrap;
   justify-content: space-evenly;
 `
