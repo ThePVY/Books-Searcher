@@ -22,7 +22,7 @@ const Wrapper = styled.div<{ fixedHeight: boolean }>`
 `
 
 const ContentArea = styled.div`
-  background-color: white;
+  background-color: #ffffff;
   width: 100%;
   height: 100%;
 `

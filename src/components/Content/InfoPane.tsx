@@ -1,11 +1,13 @@
 import { ItemTypeOf } from '@/types/common-types'
-import { FC, ReactEventHandler, useState } from 'react'
+import { FC, ReactEventHandler, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Div from '../common/Div'
 import FlexContainer from '../common/FlexContainer'
 import Image from '../common/Image'
 import { ContentPropsT } from './Content'
 import defaultCover from '@/images/default-cover.jpg'
+import Preloader from '../common/Preloader'
+import { Subscriber } from '@/utils/utils'
 
 const InfoPanelWrapper = styled.div`
   width: 100%;
@@ -46,7 +48,7 @@ const ImageWrapper = styled.div`
   @media screen and (max-width: 568px) {
     width: fit-content;
     img {
-      max-width: 300px;
+      max-width: 280px;
       /* max-height: 510px; */
     }
   }
@@ -85,52 +87,80 @@ const FlexInfoCell = styled(FlexContainer)`
 
 interface IInfoPaneProps {
   edition: ItemTypeOf<ContentPropsT['itemsOnPage']>
+  onSnippetClickSC: Subscriber
+  onNextClickSC: Subscriber
+  onPrevClickSC: Subscriber
 }
 
-const InfoPane: FC<IInfoPaneProps> = ({ edition }) => {
+const InfoPane: FC<IInfoPaneProps> = ({ edition, onSnippetClickSC, onNextClickSC, onPrevClickSC }) => {
   const [srcState, setSrcState] = useState('')
   const imageSrc = srcState || edition?.largeCover
-  const checkSize: ReactEventHandler<HTMLImageElement> = (e) => {
+  const [isFetching, setIsFetching] = useState(true)
+  const checkSize: ReactEventHandler<HTMLImageElement> = e => {
     if (e.currentTarget.naturalWidth < 10) {
       setSrcState(defaultCover)
     }
+    else {
+      setSrcState(edition?.largeCover)
+    }
+    setIsFetching(false)
   }
+
+  useEffect(() => {
+    const set = () => setIsFetching(true)
+    onSnippetClickSC.subscribe(set)
+    onNextClickSC.subscribe(set)
+    onPrevClickSC.subscribe(set)
+    return () => {
+      onSnippetClickSC.unsubscribe(set)
+      onNextClickSC.unsubscribe(set)
+      onPrevClickSC.unsubscribe(set)
+    }
+  }, [])
+
   return (
     <InfoPanelWrapper>
       <ImageWrapper>
-        <Image onLoad={checkSize} src={imageSrc} alt="" />
+        {isFetching ? (
+          <>
+            <Preloader isFetching />
+            <img onLoad={checkSize} src={edition?.largeCover} alt='' hidden />
+          </>
+        ) : (
+          <Image src={imageSrc} alt='' />
+        )}
       </ImageWrapper>
       <FlexInfo>
         <FlexInfoCell>
-          <Div width="4rem">Author:</Div>
+          <Div width='4rem'>Author:</Div>
           <div>{edition?.author}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
         <FlexInfoCell>
-          <Div width="4rem">Title:</Div>
+          <Div width='4rem'>Title:</Div>
           <div>{edition?.title}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
         <FlexInfoCell>
-          <Div width="4rem">Pages:</Div>
+          <Div width='4rem'>Pages:</Div>
           <div>{edition?.number_of_pages}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
         <FlexInfoCell>
-          <Div width="4rem">Publisher:</Div>
+          <Div width='4rem'>Publisher:</Div>
           <div>{edition?.publishers}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
         <FlexInfoCell>
-          <Div width="4rem">Publish date:</Div>
+          <Div width='4rem'>Publish date:</Div>
           <div>{edition?.publish_date}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
         <FlexInfoCell>
-          <Div width="4rem">ISBN:</Div>
+          <Div width='4rem'>ISBN:</Div>
           <div>{edition?.isbn}</div>
         </FlexInfoCell>
-        <hr/>
+        <hr />
       </FlexInfo>
     </InfoPanelWrapper>
   )

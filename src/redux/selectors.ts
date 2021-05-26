@@ -1,3 +1,4 @@
+import { Subscriber } from "@/utils/utils";
 import { IEditionInfo } from "./app-reducer";
 import { RootStateT } from "./store-redux";
 
@@ -26,6 +27,20 @@ const selector = {
   },
   getUniqueTitles(state: RootStateT): string[] {
     return state.app.uniqueTitles
+  },
+  subscribeControllers: {
+    onHintClick(state: RootStateT): Subscriber {
+      return state.app.subscribeControllers.onHintClick
+    },
+    onSnippetClick(state: RootStateT): Subscriber {
+      return state.app.subscribeControllers.onSnippetClick
+    },
+    onNextClick(state: RootStateT): Subscriber {
+      return state.app.subscribeControllers.onNextClick
+    },
+    onPrevClick(state: RootStateT): Subscriber {
+      return state.app.subscribeControllers.onPrevClick
+    },
   }
 }
 

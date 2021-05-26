@@ -2,7 +2,7 @@ import booksAPI, { BookData } from '@/api/books-api'
 import { getCoverUrl } from '@/api/covers-api'
 import searchAPI, { SearchData } from '@/api/search-api'
 import { ActionT } from '@/types/common-types'
-import { checkAndParse, useSessionStorage } from '@/utils/utils'
+import { checkAndParse, Subscriber, useSessionStorage } from '@/utils/utils'
 import { ThunkAction } from 'redux-thunk'
 import { RootStateT } from './store-redux'
 
@@ -196,7 +196,13 @@ const initialState = {
   itemsOnPage: (checkAndParse('itemsOnPage') || []) as IEditionInfo[],
   searching: false,
   lastQuery: checkAndParse('lastQuery') as string,
-  searchCount: (checkAndParse('lastQuery') || 0) as number
+  searchCount: (checkAndParse('lastQuery') || 0) as number,
+  subscribeControllers: {
+    onSnippetClick: new Subscriber(),
+    onHintClick: new Subscriber(),
+    onNextClick: new Subscriber(),
+    onPrevClick: new Subscriber()
+  }
 }
 export type AppStateT = typeof initialState
 

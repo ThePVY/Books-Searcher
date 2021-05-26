@@ -1,3 +1,5 @@
+import { WrapperFT } from "@/types/common-types"
+
 interface IObj {
   [key: string]: unknown
 }
@@ -17,15 +19,27 @@ export function throttle(fn: () => void, ms: number): ReturnType<typeof setTimeo
 
 
 export class Subscriber {
-  observer: () => void
+  observers: Map<string, WrapperFT>
 
   constructor() {
-    this.observer = null as () => void
+    this.observers = new Map<string, WrapperFT>()
     this.subscribe = this.subscribe.bind(this)
   }
 
-  subscribe(fn: () => void): void {
-    this.observer = fn
+  subscribe(fn: WrapperFT): void {
+    this.observers.set(fn.name, fn)
+  }
+
+  unsubscribe(fn: WrapperFT): 1 | 0 {
+    if (this.observers.has(fn.name)) {
+      this.observers.delete(fn.name)
+      return 0
+    }
+    return 1
+  }
+
+  callObservers(): void {
+    this.observers.forEach((observer) => observer())
   }
 
 }

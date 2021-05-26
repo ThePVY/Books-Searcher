@@ -62,12 +62,12 @@ const ViewArea = styled.div<{ fixed: boolean }>`
     height: 650px;
   }
   @media screen and (max-width: 568px) {
-    width: 320px;
+    width: 100vw;
     max-width: 100vw;
     height: 710px;
   }
   @media screen and (max-width: 320px) {
-    width: 250px;
+    width: 100vw;
     height: 500px;
   }
 `
@@ -83,49 +83,56 @@ const hoistAnimation = keyframes`
 
 const ContentArea = styled(FlexContainer)`
   background-color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   min-height: max-content;
   position: absolute;
   top: 0;
   z-index: 10;
   animation: ${hoistAnimation} 0.5s 1;
   animation-delay: 0.5;
+
+  padding: 0 2.5rem;
+  @media screen and (max-width: 568px) {
+    padding: 0;
+  }
 `
 
 const LeftLeafContainer = styled(Div)`
-  width: 5vw;
+  width: 7%;
   min-width: 2.5rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  margin: auto 0;
+  transition: all .3s ease-in-out;
   &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.1);
   }
   @media screen and (max-width: 568px) {
     background-color: rgba(0, 0, 0, 0);
     &:hover {
       background-color: rgba(0, 0, 0, 0.2);
     }
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 `
 const RightLeafContainer = styled(Div)`
-  width: 5vw;
+  width: 7%;
   min-width: 2.5rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  position: absolute;
+  right: 0;
+  margin: auto 0;
+  transition: all .3s ease-in-out;
   &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.1);
   }
   @media screen and (max-width: 568px) {
     background-color: rgba(0, 0, 0, 0);
     &:hover {
       background-color: rgba(0, 0, 0, 0.2);
     }
-    position: absolute;
-    top: 0;
-    right: 0;
   }
 `
 

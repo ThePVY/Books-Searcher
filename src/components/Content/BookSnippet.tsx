@@ -15,13 +15,17 @@ interface IBookSnippetProps {
 const BookSnippetWrapper = styled.div`
   width: 250px;
   height: 320px;
-  border: 2px solid transparent;
-  border-radius: 10px;
+  background-color: white;
+  padding-top: .5rem;
+  margin-bottom: .5rem;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
+  transition: all .3s ease-in;
   img {
     user-select: none;
   }
   &:hover {
-    border-color: #aaa9a9;
+    box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
+    transform: translate3d(0px, -2px, 0px);
   }
   div {
     text-align: center;
@@ -47,8 +51,11 @@ const BookSnippet: FC<IBookSnippetProps> = (props) => {
       setSrcState(defaultCover)
     }
   }
+  const OnClickHandler = () => {
+    props.onClick();
+  }
   return (
-    <BookSnippetWrapper onClick={props.onClick}>
+    <BookSnippetWrapper onClick={OnClickHandler}>
       <Div height="fit-content" width="fit-content" margin="0 auto">
         <Image onLoad={checkSize} height="183px" maxWidth="180px" src={imageSrc} alt="" />
       </Div>

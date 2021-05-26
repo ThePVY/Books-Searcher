@@ -1,6 +1,7 @@
 import { thunkCreator } from '@/redux/app-reducer'
 import selector from '@/redux/selectors'
 import { RootStateT } from '@/redux/store-redux'
+import { Subscriber } from '@/utils/utils'
 
 import { FC } from 'react'
 import { connect } from 'react-redux'
@@ -14,15 +15,20 @@ interface IOwnProps {
   subscribeHint?: (fn: () => void) => void
 }
 
+type AppState = RootStateT['app']
+
 interface IStateProps {
-  pageSize: RootStateT['app']['pageSize']
-  pagesNum: RootStateT['app']['pagesNum']
-  currentPage: RootStateT['app']['currentPage']
-  itemsOnPage: RootStateT['app']['itemsOnPage']
-  searching: RootStateT['app']['searching']
-  lastQuery: RootStateT['app']['lastQuery']
-  searchCount: RootStateT['app']['searchCount']
-  uniqueTitles: RootStateT['app']['uniqueTitles']
+  pageSize: AppState['pageSize']
+  pagesNum: AppState['pagesNum']
+  currentPage: AppState['currentPage']
+  itemsOnPage: AppState['itemsOnPage']
+  searching: AppState['searching']
+  lastQuery: AppState['lastQuery']
+  searchCount: AppState['searchCount']
+  uniqueTitles: AppState['uniqueTitles']
+  onSnippetClickSC: Subscriber
+  onNextClickSC: Subscriber
+  onPrevClickSC: Subscriber
 }
 
 interface IDispatchProps {
@@ -58,7 +64,10 @@ const Content: FC<ContentPropsT> = props => {
     searching,
     searchCount,
     lastQuery,
-    uniqueTitles
+    uniqueTitles,
+    onSnippetClickSC,
+    onNextClickSC,
+    onPrevClickSC
   } = props
   const { getAllBooks, getItemsOnPage, subscribeHint } = props
 
@@ -68,13 +77,21 @@ const Content: FC<ContentPropsT> = props => {
 
   const searchFormProps = { subscribeHint, getAllBooks, lastQuery, uniqueTitles }
   const searchListMethods = { onPageClick }
-  const searchListState = { pageSize, pagesNum, currentPage, itemsOnPage, searchCount, lastQuery }
+  const searchListSubscribers = { onSnippetClickSC, onNextClickSC, onPrevClickSC }
+  const searchListState = {
+    pageSize,
+    pagesNum,
+    currentPage,
+    itemsOnPage,
+    searchCount,
+    lastQuery,
+  }
   return (
     <ContentWrapper>
       <SinglePane>
         <SearchForm {...searchFormProps} />
         {!searching ? (
-          <SearchList {...searchListState} {...searchListMethods} />
+          <SearchList {...searchListState} {...searchListMethods} {...searchListSubscribers} />
         ) : (
           <CenteringDiv>
             <Preloader isFetching />
@@ -93,7 +110,10 @@ const mapStateToProps = (state: RootStateT): IStateProps => ({
   searching: selector.getIsSearching(state),
   lastQuery: selector.getLastQuery(state),
   searchCount: selector.getSearchCount(state),
-  uniqueTitles: selector.getUniqueTitles(state)
+  uniqueTitles: selector.getUniqueTitles(state),
+  onSnippetClickSC: selector.subscribeControllers.onSnippetClick(state),
+  onNextClickSC: selector.subscribeControllers.onNextClick(state),
+  onPrevClickSC: selector.subscribeControllers.onPrevClick(state),
 })
 
 const dispatchToProps = thunkCreator

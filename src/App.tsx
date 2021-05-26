@@ -1,11 +1,13 @@
-import Footer from "./components/Footer/Footer";
-import Content from "./components/Content/Content";
-import styled from "styled-components";
-import Header from "./components/Header/Header";
-import { FC, ReactEventHandler } from "react";
-import { Subscriber } from "./utils/utils";
-import { hintClassName } from "./components/Content/HintsPanel";
-import { searchInputClass } from "./components/Content/SearchForm";
+import Footer from './components/Footer/Footer'
+import Content from './components/Content/Content'
+import styled from 'styled-components'
+import Header from './components/Header/Header'
+import { FC, ReactEventHandler } from 'react'
+import { hintClassName } from './components/Content/HintsPanel'
+import { searchInputClass } from './components/Content/SearchForm'
+import { useSelector } from 'react-redux'
+import { RootStateT } from './redux/store-redux'
+import selector from './redux/selectors'
 
 const AppWrapper = styled.div`
   background-color: rgb(236, 236, 236);
@@ -16,19 +18,20 @@ const AppWrapper = styled.div`
   grid-template-rows: 6vh 1fr 6vh;
   grid-template-columns: 1fr;
   grid-template-areas:
-    "header"
-    "content"
-    "footer";
-`;
-
-const hintSubscriber = new Subscriber()
+    'header'
+    'content'
+    'footer';
+`
 
 const App: FC = () => {
   console.log('App rendered')
-  const handleClick: ReactEventHandler<HTMLDivElement> = (e) => {
+  const hintSubscriber = useSelector((state: RootStateT) =>
+    selector.subscribeControllers.onHintClick(state)
+  )
+  const handleClick: ReactEventHandler<HTMLDivElement> = e => {
     const { classList } = e.target as HTMLDivElement
     if (!classList.contains(hintClassName) && !classList.contains(searchInputClass)) {
-      hintSubscriber.observer()
+      hintSubscriber.callObservers()
     }
   }
   return (
@@ -37,7 +40,7 @@ const App: FC = () => {
       <Content subscribeHint={hintSubscriber.subscribe} />
       <Footer />
     </AppWrapper>
-  );
+  )
 }
 
-export default App;
+export default App
