@@ -1,4 +1,5 @@
 import { ActionT } from "@/types/common-types";
+import { cookieCtrl } from "@/utils/ThemeCookie";
 import { Subscriber } from "@/utils/utils";
 
 export type ThemeT = 'dark' | 'main'
@@ -16,10 +17,10 @@ export const actionCreator = {
 }
 
 const initialState = {
-  currentTheme: 'main' as ThemeT,
+  currentTheme: (cookieCtrl.getTheme() || 'main') as ThemeT,
   subscribeControllers: {
-    setDarkTheme: new Subscriber,
-    setMainTheme: new Subscriber,
+    setDarkTheme: new Subscriber(),
+    setMainTheme: new Subscriber()
   }
 }
 
@@ -28,8 +29,10 @@ type ThemeState = typeof initialState
 export const themeReducer = (state = initialState, action: ThemeActionT): ThemeState => {
   switch (action.type) {
     case SET_CURRENT_THEME:
+      cookieCtrl.setTheme(action.payload)
       return { ...state, currentTheme: action.payload }
     default:
       return state
   }
-} 
+}
+

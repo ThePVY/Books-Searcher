@@ -24,6 +24,7 @@
     }
   },
   "rules": {
+    "prefer-destructuring": "off",
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "camelcase": "off",
     "semi": "off",

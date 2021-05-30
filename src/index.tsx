@@ -8,6 +8,7 @@ import store, { RootStateT } from './redux/store-redux'
 import App from './App'
 import { darkTheme, mainTheme } from './themes'
 import selector from './redux/selectors'
+import { cookieCtrl } from './utils/ThemeCookie'
 
 const GlobalStyles = createGlobalStyle`
     * {
@@ -30,8 +31,10 @@ const GlobalStyles = createGlobalStyle`
     }
 `
 
+const initialTheme = cookieCtrl.getInialTheme()
+
 const DarkThemeProvider: FC = ({ children }) => {
-  const [theme, setTheme] = useState(mainTheme)
+  const [theme, setTheme] = useState(initialTheme || mainTheme)
   const setDarkTheme = () => setTheme(darkTheme)
   const setMainTheme = () => setTheme(mainTheme)
   const setMainThemeSC = useSelector((state: RootStateT) =>

@@ -1,6 +1,7 @@
 import selector from '@/redux/selectors'
 import { AppDispatchT, RootStateT } from '@/redux/store-redux'
 import { actionCreator } from '@/redux/theme-reducer'
+import { cookieCtrl } from '@/utils/ThemeCookie'
 import { FC, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -39,6 +40,8 @@ const ThemeSwitcher = styled(Switcher)`
   z-index: 1;
 `
 
+const initialState = cookieCtrl.getSwitcherInitialState()
+
 const Header: FC = () => {
   const setMainThemeSC = useSelector((state: RootStateT) =>
     selector.subscribeControllers.setMainTheme(state)
@@ -63,7 +66,7 @@ const Header: FC = () => {
   })
   return (
     <Wrapper>
-      <ThemeSwitcher initialState="left" leftSC={setMainThemeSC} rightSC={setDarkThemeSC} />
+      <ThemeSwitcher initialState={initialState} leftSC={setMainThemeSC} rightSC={setDarkThemeSC} />
       <Title>SEARCH BOOKS WITH EASE</Title>
     </Wrapper>
   )
