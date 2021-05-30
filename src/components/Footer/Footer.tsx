@@ -1,9 +1,8 @@
 import { FC } from 'react'
 import styled from 'styled-components'
-import Div from '../common/Div'
 
-const FooterWrapper = styled(Div)`
-  background-color: rgb(245, 245, 245);
+const FooterWrapper = styled.div`
+  background-color: ${({ theme: { colors } }) => colors.footerBg};
   grid-area: footer;
   text-align: center;
   height: 6vh;

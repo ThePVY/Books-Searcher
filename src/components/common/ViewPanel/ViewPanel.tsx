@@ -1,13 +1,17 @@
+import selector from '@/redux/selectors'
+import { RootStateT } from '@/redux/store-redux'
+import { ThemeT } from '@/redux/theme-reducer'
 import { FC, MouseEventHandler } from 'react'
+import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 
 const ShadowDiv = styled.div<{ isShown: boolean }>`
-  ${props =>
+  ${(props) =>
     props.isShown &&
     css`
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: ${(props) => props.theme.colors.shadowBg};
       width: 100vw;
       height: 100vh;
       position: fixed;
@@ -22,7 +26,7 @@ const ShadowDiv = styled.div<{ isShown: boolean }>`
     при этом не влияя на элементы, окружающие ViewPanel
 */
 const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
-  ${props =>
+  ${(props) =>
     props.hide &&
     css`
       width: 0;
@@ -30,14 +34,14 @@ const NullContainer = styled.div<{ hide: boolean; isShown: boolean }>`
       z-index: 10;
       margin: 0 auto;
     `}
-  display: ${props => (props.isShown ? 'block' : 'none')};
+  display: ${(props) => (props.isShown ? 'block' : 'none')};
 `
 
 const ViewArea = styled.div<{ fixed: boolean }>`
   width: 900px;
   height: 700px;
   z-index: 10;
-  ${props =>
+  ${(props) =>
     props.fixed
       ? css`
           position: fixed;
@@ -82,7 +86,7 @@ const hoistAnimation = keyframes`
 `
 
 const ContentArea = styled(FlexContainer)`
-  background-color: white;
+  background-color: ${(props) => props.theme.colors.contentBg};
   border-radius: 10px;
   min-height: max-content;
   position: absolute;
@@ -97,42 +101,37 @@ const ContentArea = styled(FlexContainer)`
   }
 `
 
-const LeftLeafContainer = styled(Div)`
+const LeafContainer = styled.div<{
+  dir: 'right' | 'left'
+  currentTheme: ThemeT
+}>`
+  ${({ currentTheme }) =>
+    currentTheme === 'main' &&
+    css`
+      background-color: rgba(0, 0, 0, 0.06);
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    `};
+  ${({ currentTheme }) =>
+    currentTheme === 'dark' &&
+    css`
+      background-color: rgba(255, 255, 255, 0.04);
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    `};
   width: 7%;
+  height: 100%;
   min-width: 2.5rem;
-  background-color: rgba(0, 0, 0, 0.06);
   border-radius: 10px;
   position: absolute;
-  left: 0;
+  left: ${(props) => props.dir === 'left' && 0};
+  right: ${(props) => props.dir === 'right' && 0};
   margin: auto 0;
-  transition: all .3s ease-in-out;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
+  transition: all 0.3s ease-in-out;
   @media screen and (max-width: 568px) {
     background-color: rgba(0, 0, 0, 0);
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-`
-const RightLeafContainer = styled(Div)`
-  width: 7%;
-  min-width: 2.5rem;
-  background-color: rgba(0, 0, 0, 0.06);
-  border-radius: 10px;
-  position: absolute;
-  right: 0;
-  margin: auto 0;
-  transition: all .3s ease-in-out;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  @media screen and (max-width: 568px) {
-    background-color: rgba(0, 0, 0, 0);
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
   }
 `
 
@@ -155,15 +154,16 @@ const ViewPanel: FC<IViewPanelProps> = ({
   onClose,
   fixed = false
 }) => {
+  const currentTheme = useSelector((state: RootStateT) => selector.theme.getCurrentTheme(state))
   return (
     <>
       <ShadowDiv onClick={onClose} isShown={isShown} />
       <NullContainer hide={!fixed} isShown={isShown}>
         <ViewArea fixed={fixed}>
-          <ContentArea jstfCnt='space-between' algnItems='center'>
-            {multiple && <LeftLeafContainer onClick={onPrev} />}
+          <ContentArea jstfCnt="space-between" algnItems="center">
+            {multiple && <LeafContainer dir="left" currentTheme={currentTheme} onClick={onPrev} />}
             <Div>{content}</Div>
-            {multiple && <RightLeafContainer onClick={onNext} />}
+            {multiple && <LeafContainer dir="right" currentTheme={currentTheme} onClick={onNext} />}
           </ContentArea>
         </ViewArea>
       </NullContainer>

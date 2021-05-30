@@ -10,8 +10,7 @@ import { RootStateT } from './redux/store-redux'
 import selector from './redux/selectors'
 
 const AppWrapper = styled.div`
-  background-color: rgb(236, 236, 236);
-  z-index: 100;
+  background-color: ${(props) => props.theme.colors.appBg};
   min-height: 100%;
   min-width: 250px;
   display: grid;
@@ -21,6 +20,10 @@ const AppWrapper = styled.div`
     'header'
     'content'
     'footer';
+
+  @media screen and (max-width: 568px) {
+    grid-template-rows: 10vh 1fr 10vh;
+  }
 `
 
 const App: FC = () => {
@@ -28,7 +31,7 @@ const App: FC = () => {
   const hintSubscriber = useSelector((state: RootStateT) =>
     selector.subscribeControllers.onHintClick(state)
   )
-  const handleClick: ReactEventHandler<HTMLDivElement> = e => {
+  const handleClick: ReactEventHandler<HTMLDivElement> = (e) => {
     const { classList } = e.target as HTMLDivElement
     if (!classList.contains(hintClassName) && !classList.contains(searchInputClass)) {
       hintSubscriber.callObservers()

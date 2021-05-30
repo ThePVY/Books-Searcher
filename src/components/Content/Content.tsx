@@ -11,6 +11,22 @@ import SinglePane from '../common/SinglePane/SinglePane'
 import SearchForm from './SearchForm'
 import SearchList from './SearchList'
 
+const ContentWrapper = styled.div`
+  box-sizing: border-box;
+  grid-area: content;
+  color: ${(props) => props.theme.colors.contentFg};
+  margin: 1vh 1vw;
+`
+
+const CenteringDiv = styled.div`
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
+
 interface IOwnProps {
   subscribeHint?: (fn: () => void) => void
 }
@@ -39,23 +55,7 @@ interface IDispatchProps {
 
 export type ContentPropsT = IOwnProps & IStateProps & IDispatchProps
 
-const ContentWrapper = styled.div`
-  box-sizing: border-box;
-  grid-area: content;
-  color: rgb(72, 78, 78);
-  margin: 1vh 1vw;
-`
-
-const CenteringDiv = styled.div`
-  width: fit-content;
-  height: fit-content;
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`
-
-const Content: FC<ContentPropsT> = props => {
+const Content: FC<ContentPropsT> = (props) => {
   const {
     pageSize,
     pagesNum,
@@ -84,7 +84,7 @@ const Content: FC<ContentPropsT> = props => {
     currentPage,
     itemsOnPage,
     searchCount,
-    lastQuery,
+    lastQuery
   }
   return (
     <ContentWrapper>
@@ -113,7 +113,7 @@ const mapStateToProps = (state: RootStateT): IStateProps => ({
   uniqueTitles: selector.getUniqueTitles(state),
   onSnippetClickSC: selector.subscribeControllers.onSnippetClick(state),
   onNextClickSC: selector.subscribeControllers.onNextClick(state),
-  onPrevClickSC: selector.subscribeControllers.onPrevClick(state),
+  onPrevClickSC: selector.subscribeControllers.onPrevClick(state)
 })
 
 const dispatchToProps = thunkCreator

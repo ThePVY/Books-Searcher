@@ -22,7 +22,7 @@ const Div = styled.div<DivT>`
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '0px'};
   text-align: ${(props) => props.textAlign || 'left'};
-  color: ${(props) => props.color || 'rgb(72, 78, 78)'};
+  color: ${(props) => props.color};
   z-index: ${(props) => props.zIndex || 'unset'};
   border: ${props => props.border || 'auto'};
 `

@@ -1,31 +1,53 @@
 import { ItemTypeOf } from '@/types/common-types'
 import { FC, ReactEventHandler, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Div from '../common/Div'
 import Image from '../common/Image'
 import Span from '../common/Span'
 import { ContentPropsT } from './Content'
 import defaultCover from '@/images/default-cover.jpg'
+import { ThemeT } from '@/redux/theme-reducer'
+import { useSelector } from 'react-redux'
+import { RootStateT } from '@/redux/store-redux'
+import selector from '@/redux/selectors'
 
 interface IBookSnippetProps {
   bookInfo: ItemTypeOf<ContentPropsT['itemsOnPage']>
   onClick: () => void
 }
 
-const BookSnippetWrapper = styled.div`
+const BookSnippetWrapper = styled.div<{ currentTheme: ThemeT }>`
+  ${({ theme: { colors } }) => css`
+    background-color: ${colors.contentBg};
+    * {
+      color: ${colors.contentFg};
+    }
+  `}
+  ${({ currentTheme }) =>
+    currentTheme === 'main' &&
+    css`
+      box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
+      &:hover {
+        box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
+        transform: translate3d(0px, -2px, 0px);
+      }
+    `};
+  ${({ currentTheme }) =>
+    currentTheme === 'dark' &&
+    css`
+      box-shadow: rgba(255, 255, 255, 0.06) 0px 2px 4px;
+      &:hover {
+        box-shadow: rgba(255, 255, 255, 0.22) 0px 19px 43px;
+        transform: translate3d(0px, -2px, 0px);
+      }
+    `};
   width: 250px;
   height: 320px;
-  background-color: white;
-  padding-top: .5rem;
-  margin-bottom: .5rem;
-  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
-  transition: all .3s ease-in;
+  padding-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease-in;
   img {
     user-select: none;
-  }
-  &:hover {
-    box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
-    transform: translate3d(0px, -2px, 0px);
   }
   div {
     text-align: center;
@@ -35,15 +57,13 @@ const BookSnippetWrapper = styled.div`
   ::-webkit-scrollbar {
     display: none;
   }
-  * {
-    color: #5f5f5f;
-  }
   @media screen and (max-width: 768px) {
     height: 300px;
   }
 `
 
 const BookSnippet: FC<IBookSnippetProps> = (props) => {
+  const currentTheme = useSelector((state: RootStateT) => selector.theme.getCurrentTheme(state))
   const [srcState, setSrcState] = useState('')
   const imageSrc = srcState || props.bookInfo?.mediumCover
   const checkSize: ReactEventHandler<HTMLImageElement> = (e) => {
@@ -52,10 +72,10 @@ const BookSnippet: FC<IBookSnippetProps> = (props) => {
     }
   }
   const OnClickHandler = () => {
-    props.onClick();
+    props.onClick()
   }
   return (
-    <BookSnippetWrapper onClick={OnClickHandler}>
+    <BookSnippetWrapper currentTheme={currentTheme} onClick={OnClickHandler}>
       <Div height="fit-content" width="fit-content" margin="0 auto">
         <Image onLoad={checkSize} height="183px" maxWidth="180px" src={imageSrc} alt="" />
       </Div>

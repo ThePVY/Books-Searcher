@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 interface IProps {
   flex: string
@@ -7,12 +7,21 @@ interface IProps {
 type PropsT = Readonly<Partial<IProps>>
 
 const Button = styled.button<PropsT>`
-  background-color: rgb(255, 255, 255);
-  color: rgb(39, 41, 41);
+  ${({ theme: { colors } }) =>
+    css`
+      background-color: ${colors.appBg};
+      border: 1px solid ${colors.appBg};
+      color: ${colors.appFg};
+      &:disabled {
+        background-color: ${`${colors.appBg}77`};
+        border-color: ${`${colors.appBg}77`};
+        color: ${`${colors.appFg}77`};
+        cursor: default;
+      }
+    `};
   cursor: pointer;
   width: 100%;
   min-width: fit-content;
-  border: 1px solid rgb(148, 148, 150);
   border-radius: 5px;
   font-size: 0.8em;
   font-family: sans-serif;
@@ -25,13 +34,6 @@ const Button = styled.button<PropsT>`
   resize: none;
 
   flex: ${(props) => props.flex || 'auto'};
-
-  &:disabled {
-    background-color: rgba(0, 0, 0, 0.04);
-    color: rgba(0, 0, 0, 0.3);
-    border-color: (0, 0, 0, 0.04);
-    cursor: default;
-  }
 `
 
 export default Button

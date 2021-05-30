@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export enum InputType {
   'button',
@@ -22,7 +22,7 @@ export enum InputType {
   'text',
   'time',
   'url',
-  'week',
+  'week'
 }
 
 interface IInputProps {
@@ -38,11 +38,14 @@ type InputTypeT = Readonly<Partial<IInputProps>>
 const Input = styled.input<InputTypeT>`
   min-width: fit-content;
   &:not(input[type='checkbox']) {
-    width: ${props => props.width || '100%'}
+    width: ${(props) => props.width || '100%'};
   }
-  background-color: rgb(252, 252, 252);
-  color: ${({ color }) => color || 'rgb(118, 124, 124)'};
-  border: 1px solid rgb(125, 125, 128);
+  ${({ theme: { colors } }) =>
+    css`
+      background-color: ${colors.appBg};
+      color: ${colors.appFg};
+      border: 1px solid ${colors.appBg};
+    `};
   border-radius: 5px;
 
   font-size: 14px;

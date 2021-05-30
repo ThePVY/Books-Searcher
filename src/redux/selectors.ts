@@ -1,6 +1,7 @@
 import { Subscriber } from "@/utils/utils";
 import { IEditionInfo } from "./app-reducer";
 import { RootStateT } from "./store-redux";
+import { ThemeT } from "./theme-reducer";
 
 
 const selector = {
@@ -41,6 +42,17 @@ const selector = {
     onPrevClick(state: RootStateT): Subscriber {
       return state.app.subscribeControllers.onPrevClick
     },
+    setDarkTheme(state: RootStateT): Subscriber {
+      return state.theme.subscribeControllers.setDarkTheme
+    },
+    setMainTheme(state: RootStateT): Subscriber {
+      return state.theme.subscribeControllers.setMainTheme
+    },
+  },
+  theme: {
+    getCurrentTheme(state: RootStateT): ThemeT {
+      return state.theme.currentTheme
+    }
   }
 }
 

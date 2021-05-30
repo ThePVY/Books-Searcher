@@ -18,11 +18,11 @@ const Wrapper = styled.div<{ fixedHeight: boolean }>`
     grid-template-columns: 0fr minmax(250px, 1fr) 0fr;
   }
 
-  height: ${props => (props.fixedHeight ? '86vh' : 'fit-content')};
+  height: ${(props) => (props.fixedHeight ? '86vh' : 'fit-content')};
 `
 
 const ContentArea = styled.div`
-  background-color: #ffffff;
+  background-color: ${({ theme: { colors } }) => colors.contentBg};
   width: 100%;
   height: 100%;
 `

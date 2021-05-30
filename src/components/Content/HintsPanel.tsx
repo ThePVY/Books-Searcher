@@ -2,7 +2,7 @@ import { FC } from 'react'
 import styled from 'styled-components'
 
 const HintsWrapper = styled.div<{ isShown: boolean }>`
-  display: ${props => (props.isShown ? 'block' : 'none')};
+  display: ${(props) => (props.isShown ? 'block' : 'none')};
   width: 100%;
   height: fit-content;
   min-width: 250px;
@@ -12,8 +12,8 @@ const HintsWrapper = styled.div<{ isShown: boolean }>`
   left: 0;
 
   max-height: 50vh;
-  background-color: white;
-  padding: .5rem;
+  background-color: ${({ theme: { colors } }) => colors.hintBg};
+  padding: 0.5rem;
   border: 1px solid grey;
   border-radius: 5px;
   overflow: auto;
@@ -25,12 +25,11 @@ const HintsWrapper = styled.div<{ isShown: boolean }>`
 const HintContainer = styled.div`
   width: 100%;
   height: 2.5rem;
-  margin: .2rem 0;
+  margin: 0.2rem 0;
   /* border: 1px solid grey;
   border-radius: 5px; */
-  background-color: rgb(255, 255, 255);
   &:hover {
-    background-color: rgb(236, 238, 238);
+    background-color: ${({ theme: { colors } }) => colors.hintHoverBg};
   }
   cursor: pointer;
 
