@@ -196,7 +196,7 @@ const initialState = {
   itemsOnPage: (checkAndParse('itemsOnPage') || []) as IEditionInfo[],
   searching: false,
   lastQuery: checkAndParse('lastQuery') as string,
-  searchCount: (checkAndParse('lastQuery') || 0) as number,
+  searchCount: (checkAndParse('searchCount') || 0) as number,
   subscribeControllers: {
     onSnippetClick: new Subscriber(),
     onHintClick: new Subscriber(),
