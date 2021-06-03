@@ -1,13 +1,21 @@
 import { darkTheme, mainTheme } from '@/themes'
 import { cookieCtrl } from '@/utils/ThemeCookie'
 import { makeAutoObservable } from 'mobx'
+import EditionInfo from './edition-info'
+import { RootStore } from './store'
 
 export type ThemeT = 'main' | 'dark'
 
-export class UIStore {
+export default class UIStore {
+  rootStore: RootStore
   currentTheme = cookieCtrl.getInialTheme()
+  _hintsMode = false
+  _viewPanelMode = false
+  _viewContent: EditionInfo
+  _imageLoading = false
 
-  constructor () {
+  constructor (rootStore: RootStore) {
+    this.rootStore = rootStore
     makeAutoObservable(this)
   }
 
@@ -19,6 +27,32 @@ export class UIStore {
     }
     cookieCtrl.setTheme(theme)
   }
-}
 
-export default new UIStore()
+  set hintsMode (value: boolean) {
+    this._hintsMode = value
+  }
+  get hintsMode (): boolean {
+    return this._hintsMode
+  }
+
+  set viewPanelMode (value: boolean) {
+    this._viewPanelMode = value
+  }
+  get viewPanelMode (): boolean {
+    return this._viewPanelMode
+  }
+
+  set viewContent (value: EditionInfo) {
+    this._viewContent = value
+  }
+  get viewContent (): EditionInfo {
+    return this._viewContent
+  }
+
+  set imageLoading (value: boolean) {
+    this._imageLoading = value
+  }
+  get imageLoading (): boolean {
+    return this._imageLoading
+  }
+}

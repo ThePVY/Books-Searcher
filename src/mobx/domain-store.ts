@@ -4,17 +4,20 @@ import searchAPI, { SearchData } from '@/api/search-api'
 import { checkAndParse, addToSessionStorage } from '@/utils/utils'
 import { autorun, makeAutoObservable } from 'mobx'
 import EditionInfo, { IBooksInfo } from './edition-info'
+import { RootStore } from './store'
 
-export class DomainStore {
+export default class DomainStore {
+  rootStore: RootStore
   allBooks = (checkAndParse('allBooks') || []) as EditionInfo[]
   pageSize = 20
   currentPage = 1
   searching = false
-  imageLoading = false
+  
   lastQuery = checkAndParse('lastQuery') as string
   searchCount = (checkAndParse('searchCount') || 0) as number
 
-  constructor () {
+  constructor (rootStore: RootStore) {
+    this.rootStore = rootStore
     makeAutoObservable(this)
     autorun(() => addToSessionStorage({
       allBooks: this.allBooks,
@@ -60,10 +63,6 @@ export class DomainStore {
     this.searching = value
   }
 
-  setImageLoading (value: boolean): void {
-    this.imageLoading = value
-  }
-
   get uniqueTitles (): string[] {
     const acc = {} as { [title: string]: number }
     this.allBooks.forEach(edition => {
@@ -98,10 +97,9 @@ function retrieveBooksInfo (searchResponse: SearchData): EditionInfo[] {
     const { title } = doc
     doc.isbn.forEach(isbn => {
       if (allBooks[isbn] || isbn.length <= 9) return
-      allBooks[isbn] = { isbn, author, title }
+      allBooks[isbn] = new EditionInfo(isbn, author, title)
     })
   })
   return Object.values(allBooks)
 }
 
-export default new DomainStore()

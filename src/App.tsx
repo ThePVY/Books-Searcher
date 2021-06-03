@@ -2,12 +2,10 @@ import Footer from './components/Footer/Footer'
 import Content from './components/Content/Content'
 import styled from 'styled-components'
 import Header from './components/Header/Header'
-import { FC, ReactEventHandler } from 'react'
+import { FC, ReactEventHandler, useContext } from 'react'
 import { hintClassName } from './components/Content/HintsPanel'
 import { searchInputClass } from './components/Content/SearchForm'
-import { useSelector } from 'react-redux'
-import { RootStateT } from './redux/store-redux'
-import selector from './redux/selectors'
+import { AppContext } from '.'
 
 const AppWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.appBg};
@@ -28,19 +26,17 @@ const AppWrapper = styled.div`
 
 const App: FC = () => {
   console.log('App rendered')
-  const hintSubscriber = useSelector((state: RootStateT) =>
-    selector.subscribeControllers.onHintClick(state)
-  )
+  const uiStore = useContext(AppContext).uiStore
   const handleClick: ReactEventHandler<HTMLDivElement> = (e) => {
     const { classList } = e.target as HTMLDivElement
     if (!classList.contains(hintClassName) && !classList.contains(searchInputClass)) {
-      hintSubscriber.callObservers()
+      uiStore.hintsMode = false
     }
   }
   return (
     <AppWrapper onClick={handleClick}>
       <Header />
-      <Content subscribeHint={hintSubscriber.subscribe} />
+      <Content />
       <Footer />
     </AppWrapper>
   )

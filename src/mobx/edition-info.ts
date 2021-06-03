@@ -10,7 +10,10 @@ export default class EditionInfo {
   mediumCover? = null as string
   largeCover? = null as string
 
-  constructor() {
+  constructor(isbn: string, title: string, author: string) {
+    this.isbn = isbn
+    this.title = title
+    this.author = author
     makeAutoObservable(this)
   }
 }

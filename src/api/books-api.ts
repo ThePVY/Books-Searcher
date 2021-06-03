@@ -8,13 +8,13 @@ export interface BookData {
 }
 
 class BooksAPI {
-  getBook(isbn: string): Promise<BookData> {
+  getBook (isbn: string): Promise<BookData> {
     return axios
       .get<BookData>(`http://openlibrary.org/isbn/${isbn}.json`)
       .then(({ data }) => {
         return data
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error)
         return null as BookData
       })

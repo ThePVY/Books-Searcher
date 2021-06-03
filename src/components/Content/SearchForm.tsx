@@ -24,17 +24,23 @@ interface IProps {
   lastQuery: string
   uniqueTitles: string[]
   getAllBooks: ContentPropsT['getAllBooks']
-  subscribeHint?: (fn: () => void) => void
+  hintsMode: boolean
+  setHintsMode: (value: boolean) => void
 }
 
-const SearchForm: FC<IProps> = ({ getAllBooks, subscribeHint, lastQuery = '', uniqueTitles }) => {
+const SearchForm: FC<IProps> = ({
+  getAllBooks,
+  hintsMode,
+  setHintsMode,
+  lastQuery = '',
+  uniqueTitles
+}) => {
   const formik = useFormik({
     initialValues: { search: lastQuery },
     onSubmit: values => {
       getAllBooks(values.search)
     }
   })
-  const [hintsMode, setHintsMode] = useState(false)
   const handleChange: ReactEventHandler<HTMLInputElement> = e => {
     formik.handleChange(e)
     clearTimeout(timeoutId)
@@ -65,7 +71,11 @@ const SearchForm: FC<IProps> = ({ getAllBooks, subscribeHint, lastQuery = '', un
           autoFocus
         />
       </Div>
-      <HintsPanel isShown={formik.values.search && hintsMode} hints={uniqueTitles} onHintClick={onHintClick} />
+      <HintsPanel
+        isShown={formik.values.search && hintMode}
+        hints={uniqueTitles}
+        onHintClick={onHintClick}
+      />
     </SearchFormWrapper>
   )
 }

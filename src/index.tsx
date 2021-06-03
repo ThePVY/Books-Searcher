@@ -1,14 +1,11 @@
 import { hot } from 'react-hot-loader/root'
-import { FC, useEffect, useState } from 'react'
+import { createContext, FC} from 'react'
 import ReactDOM from 'react-dom'
-import { Provider, useSelector } from 'react-redux'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import {} from 'styled-components/cssprop'
-import store, { RootStateT } from './redux/store-redux'
 import App from './App'
-import { darkTheme, mainTheme } from './themes'
-import selector from './redux/selectors'
-import { cookieCtrl } from './utils/ThemeCookie'
+import rootStore from './mobx/store'
+import { observer } from 'mobx-react-lite'
 
 const GlobalStyles = createGlobalStyle`
     * {
@@ -31,37 +28,16 @@ const GlobalStyles = createGlobalStyle`
     }
 `
 
-const initialTheme = cookieCtrl.getInialTheme()
+export const AppContext = createContext(rootStore)
 
-const DarkThemeProvider: FC = ({ children }) => {
-  const [theme, setTheme] = useState(initialTheme)
-  const setDarkTheme = () => setTheme(darkTheme)
-  const setMainTheme = () => setTheme(mainTheme)
-  const setMainThemeSC = useSelector((state: RootStateT) =>
-    selector.subscribeControllers.setMainTheme(state)
-  )
-  const setDarkThemeSC = useSelector((state: RootStateT) =>
-    selector.subscribeControllers.setDarkTheme(state)
-  )
-  useEffect(() => {
-    setMainThemeSC.subscribe(setMainTheme)
-    setDarkThemeSC.subscribe(setDarkTheme)
-    return () => {
-      setMainThemeSC.unsubscribe(setMainTheme)
-      setDarkThemeSC.unsubscribe(setDarkTheme)
-    }
-  }, [])
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
-
-const RootContainer = () => (
-  <Provider store={store}>
-    <DarkThemeProvider>
+const RootContainer: FC = observer(() => (
+  <AppContext.Provider value={rootStore}>
+    <ThemeProvider theme={rootStore.uiStore.currentTheme}>
       <App />
       <GlobalStyles />
-    </DarkThemeProvider>
-  </Provider>
-)
+    </ThemeProvider>
+  </AppContext.Provider>
+))
 
 const render = (Component: FC) => {
   const HotWrapper = hot(Component)

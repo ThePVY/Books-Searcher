@@ -1,16 +1,18 @@
 import { makeAutoObservable } from "mobx";
-import domainStore, { DomainStore } from "./domain-store";
-import uiStore, { UIStore } from "./ui-store";
+import DomainStore from "./domain-store";
+import UIStore from "./ui-store";
 
-class RootStore {
+export class RootStore {
   uiStore: UIStore
   domainStore: DomainStore
 
-  constructor(domainStore: DomainStore, uiStore: UIStore) {
-    this.uiStore = uiStore
-    this.domainStore = domainStore
+  constructor() {
+    this.uiStore = new UIStore(this)
+    this.domainStore = new DomainStore(this)
     makeAutoObservable(this)
   }
 }
 
-export default new RootStore(domainStore, uiStore)
+const rootStore = new RootStore()
+
+export default rootStore
