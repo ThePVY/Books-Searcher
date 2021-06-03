@@ -23,7 +23,7 @@ const babelLoader = {
     options: {
       presets: [
         [
-          '@babel/env',
+          '@babel/preset-env',
           {
             targets: {
               esmodules: true,

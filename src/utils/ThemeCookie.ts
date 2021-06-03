@@ -40,7 +40,7 @@ class ThemeCookie {
         initialTheme = darkTheme
       }
     }
-    return initialTheme
+    return initialTheme || mainTheme
   }
 
   getSwitcherInitialState(): 'left' | 'right' {

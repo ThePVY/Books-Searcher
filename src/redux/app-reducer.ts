@@ -2,7 +2,7 @@ import booksAPI, { BookData } from '@/api/books-api'
 import { getCoverUrl } from '@/api/covers-api'
 import searchAPI, { SearchData } from '@/api/search-api'
 import { ActionT } from '@/types/common-types'
-import { checkAndParse, Subscriber, useSessionStorage } from '@/utils/utils'
+import { checkAndParse, Subscriber, addToSessionStorage } from '@/utils/utils'
 import { ThunkAction } from 'redux-thunk'
 import { RootStateT } from './store-redux'
 
@@ -102,7 +102,7 @@ export const thunkCreator = {
       dispatch(thunkCreator.getItemsOnPage(1))
       dispatch(actionCreator.setLastQuery(search))
       dispatch(actionCreator.setSearching(false))
-      useSessionStorage(getState().app)
+      addToSessionStorage(getState().app)
     }
   },
   getItemsOnPage(page: number): ThunkActionT {
@@ -112,7 +112,7 @@ export const thunkCreator = {
       dispatch(actionCreator.setCurrentPage(page))
       dispatch(actionCreator.setItemsOnPage(itemsOnPage))
       dispatch(thunkCreator.getAdditionalInfo())
-      useSessionStorage({
+      addToSessionStorage({
         currentPage: page,
       })
     }
@@ -127,7 +127,7 @@ export const thunkCreator = {
       dispatch(actionCreator.setAdditionalInfo(data))
       dispatch(actionCreator.setCoverM(mediumCovers))
       dispatch(actionCreator.setCoverL(largeCovers))
-      useSessionStorage({ itemsOnPage: getState().app.itemsOnPage })
+      addToSessionStorage({ itemsOnPage: getState().app.itemsOnPage })
     }
   }
 }

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export interface BookData {
+  isbn: string
   publishers: string[] | null
   number_of_pages: number | null
   publish_date: string | null

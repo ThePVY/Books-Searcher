@@ -34,7 +34,7 @@ const GlobalStyles = createGlobalStyle`
 const initialTheme = cookieCtrl.getInialTheme()
 
 const DarkThemeProvider: FC = ({ children }) => {
-  const [theme, setTheme] = useState(initialTheme || mainTheme)
+  const [theme, setTheme] = useState(initialTheme)
   const setDarkTheme = () => setTheme(darkTheme)
   const setMainTheme = () => setTheme(mainTheme)
   const setMainThemeSC = useSelector((state: RootStateT) =>

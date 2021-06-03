@@ -1,10 +1,10 @@
 import { WrapperFT } from "@/types/common-types"
 
-interface IObj {
-  [key: string]: unknown
+interface IObj<T = any> {
+  [key: string]: T
 }
 
-export function useSessionStorage<T extends IObj>(data: T = {} as T): void {
+export function addToSessionStorage<T extends IObj>(data: T = {} as T): void {
   Object.keys(data).forEach((key) => sessionStorage.setItem(key, JSON.stringify(data[key])))
 }
 

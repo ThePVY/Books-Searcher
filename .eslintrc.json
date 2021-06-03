@@ -24,6 +24,7 @@
     }
   },
   "rules": {
+    "lines-between-class-members": "off",
     "prefer-destructuring": "off",
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "camelcase": "off",
