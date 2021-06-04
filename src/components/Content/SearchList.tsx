@@ -1,26 +1,13 @@
-import { IEditionInfo } from '@/redux/app-reducer'
-import { Subscriber } from '@/utils/utils'
-import { FC, useState } from 'react'
+import EditionInfo from '@/mobx/edition-info'
+import { RootStore } from '@/mobx/store'
+import { observer } from 'mobx-react-lite'
+import { FC } from 'react'
 import styled from 'styled-components'
 import FlexContainer from '../common/FlexContainer'
 import PagesList from '../common/PagesList/PagesList'
 import ViewPanel from '../common/ViewPanel/ViewPanel'
 import BookSnippet from './BookSnippet'
-import { ContentPropsT } from './Content'
-import InfoPane from './InfoPane'
-
-interface IOwnProps {
-  pageSize: ContentPropsT['pageSize']
-  pagesNum: ContentPropsT['pagesNum']
-  currentPage: ContentPropsT['currentPage']
-  itemsOnPage: ContentPropsT['itemsOnPage']
-  onPageClick: (page: number) => void
-  lastQuery: ContentPropsT['lastQuery']
-  searchCount: ContentPropsT['searchCount']
-  onSnippetClickSC: Subscriber
-  onNextClickSC: Subscriber
-  onPrevClickSC: Subscriber
-}
+import InfoPanel from './InfoPanel'
 
 const FlexSearchList = styled(FlexContainer)`
   height: fit-content;
@@ -40,41 +27,37 @@ const CenteringDiv = styled.div`
   text-align: center;
 `
 
-function booksNotFound (items: ContentPropsT['itemsOnPage'], searchCount: number) {
+interface IOwnProps {
+  store: RootStore
+}
+
+function booksNotFound (items: EditionInfo[], searchCount: number) {
   return !items.length && searchCount
 }
 
-const SearchList: FC<IOwnProps> = props => {
-  const {
-    itemsOnPage,
-    pagesNum,
-    currentPage,
-    onPageClick,
-    searchCount,
-    lastQuery,
-    onSnippetClickSC,
-    onNextClickSC,
-    onPrevClickSC
-  } = props
-  const [viewMode, setViewMode] = useState(false)
-  const [viewContent, setViewContent] = useState(null as IEditionInfo)
-  const closeViewPanel = () => setViewMode(false)
+const SearchList: FC<IOwnProps> = observer(({ store }) => {
+  const { itemsOnPage, pagesNum, currentPage, searchCount, lastQuery } = store.domainStore
+  const { viewPanelMode, viewContent } = store.uiStore
 
-  const getNext = (item: IEditionInfo): IEditionInfo => {
+  const closeViewPanel = () => store.uiStore.setViewPanelMode(false)
+
+  const getNext = (item: EditionInfo): EditionInfo => {
     const nextIdx = itemsOnPage.indexOf(item) + 1
     return nextIdx === itemsOnPage.length - 1 ? itemsOnPage[0] : itemsOnPage[nextIdx]
   }
-  const getPrev = (item: IEditionInfo): IEditionInfo => {
+  const getPrev = (item: EditionInfo): EditionInfo => {
     const nextIdx = itemsOnPage.indexOf(item) - 1
     return nextIdx === -1 ? itemsOnPage[itemsOnPage.length - 1] : itemsOnPage[nextIdx]
   }
   const onNextClick = () => {
-    setViewContent(getNext(viewContent))
-    onNextClickSC.callObservers()
+    store.uiStore.setViewContent(getNext(viewContent))
   }
   const onPrevClick = () => {
-    setViewContent(getPrev(viewContent))
-    onPrevClickSC.callObservers()
+    store.uiStore.setViewContent(getPrev(viewContent))
+  }
+  const onPageClick = (page: number) => {
+    store.domainStore.setCurrentPage(page)
+    store.domainStore.getAdditionalInfo()
   }
 
   return (
@@ -90,11 +73,10 @@ const SearchList: FC<IOwnProps> = props => {
           {itemsOnPage.map(item => {
             if (!item) return null
             const onSnippetClick = () => {
-              setViewContent(item)
-              setViewMode(true)
-              onSnippetClickSC.callObservers()
+              store.uiStore.setViewContent(item)
+              store.uiStore.setViewPanelMode(true)
             }
-            return <BookSnippet key={item.isbn} bookInfo={item} onClick={onSnippetClick} />
+            return <BookSnippet key={item.isbn} onClick={onSnippetClick} editionInfo={item} />
           })}
         </FlexSearchList>
       )}
@@ -102,15 +84,8 @@ const SearchList: FC<IOwnProps> = props => {
         <PagesList pagesCount={pagesNum} selectedPage={currentPage} onPageClick={onPageClick} />
       ) : null}
       <ViewPanel
-        content={
-          <InfoPane
-            edition={viewContent}
-            onSnippetClickSC={onSnippetClickSC}
-            onNextClickSC={onNextClickSC}
-            onPrevClickSC={onPrevClickSC}
-          />
-        }
-        isShown={viewMode}
+        content={<InfoPanel edition={viewContent} />}
+        isShown={viewPanelMode}
         onClose={closeViewPanel}
         fixed
         multiple
@@ -119,6 +94,6 @@ const SearchList: FC<IOwnProps> = props => {
       />
     </>
   )
-}
+})
 
 export default SearchList

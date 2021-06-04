@@ -2,7 +2,7 @@ import booksAPI, { BookData } from '@/api/books-api'
 import { getCoverUrl } from '@/api/covers-api'
 import searchAPI, { SearchData } from '@/api/search-api'
 import { checkAndParse, addToSessionStorage } from '@/utils/utils'
-import { autorun, makeAutoObservable } from 'mobx'
+import { autorun, flow, makeAutoObservable } from 'mobx'
 import EditionInfo, { IBooksInfo } from './edition-info'
 import { RootStore } from './store'
 
@@ -10,20 +10,31 @@ export default class DomainStore {
   rootStore: RootStore
   allBooks = (checkAndParse('allBooks') || []) as EditionInfo[]
   pageSize = 20
-  currentPage = 1
+  currentPage = (checkAndParse('currentPage') || 1) as number
   searching = false
-  
-  lastQuery = checkAndParse('lastQuery') as string
+
+  lastQuery = (checkAndParse('lastQuery') || '') as string
   searchCount = (checkAndParse('searchCount') || 0) as number
 
   constructor (rootStore: RootStore) {
     this.rootStore = rootStore
-    makeAutoObservable(this)
-    autorun(() => addToSessionStorage({
-      allBooks: this.allBooks,
-      lastQuery: this.lastQuery,
-      searchCount: this.searchCount
-    }))
+    makeAutoObservable(
+      this,
+      {
+        getAllBooks: flow,
+        getAdditionalInfo: flow
+      },
+      { autoBind: true }
+    )
+    autorun(() =>
+      addToSessionStorage({
+        allBooks: this.allBooks,
+        lastQuery: this.lastQuery,
+        searchCount: this.searchCount,
+        currentPage: this.currentPage,
+        itemsOnPage: this.itemsOnPage
+      })
+    )
   }
 
   * getAllBooks (search: string): Generator<Promise<SearchData>, void, SearchData> {
@@ -34,15 +45,19 @@ export default class DomainStore {
       this.lastQuery = search
       this.searching = false
       this.allBooks = retrieveBooksInfo(searchData)
+      this.setCurrentPage(1)
+      this.getAdditionalInfo()
     } catch (err) {
       this.lastQuery = search
       this.searching = false
     }
   }
 
-  * getAdditionalInfo(): Generator<Promise<BookData[]>, void, BookData[]> {
+  * getAdditionalInfo (): Generator<Promise<BookData[]>, void, BookData[]> {
     try {
-      const info = yield Promise.all([...this.itemsOnPage.map((edition) => booksAPI.getBook(edition.isbn))])
+      const info = yield Promise.all([
+        ...this.itemsOnPage.map(edition => booksAPI.getBook(edition.isbn))
+      ])
       for (let i = 0; i < this.itemsOnPage.length; i++) {
         this.itemsOnPage[i].number_of_pages = info[i].number_of_pages
         this.itemsOnPage[i].publish_date = info[i].publish_date
@@ -55,7 +70,7 @@ export default class DomainStore {
     }
   }
 
-  setCurrentPage(page: number): void {
+  setCurrentPage (page: number): void {
     this.currentPage = page
   }
 
@@ -84,7 +99,8 @@ export default class DomainStore {
         itemsOnPage.push(this.allBooks[i])
       }
     }
-    return itemsOnPage
+    const sessionItems = checkAndParse('itemsOnPage') as EditionInfo[]
+    return itemsOnPage.length ? itemsOnPage : sessionItems || []
   }
 }
 
@@ -97,9 +113,8 @@ function retrieveBooksInfo (searchResponse: SearchData): EditionInfo[] {
     const { title } = doc
     doc.isbn.forEach(isbn => {
       if (allBooks[isbn] || isbn.length <= 9) return
-      allBooks[isbn] = new EditionInfo(isbn, author, title)
+      allBooks[isbn] = new EditionInfo(isbn, title, author)
     })
   })
   return Object.values(allBooks)
 }
-

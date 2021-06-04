@@ -9,14 +9,14 @@ export type ThemeT = 'main' | 'dark'
 export default class UIStore {
   rootStore: RootStore
   currentTheme = cookieCtrl.getInialTheme()
-  _hintsMode = false
-  _viewPanelMode = false
-  _viewContent: EditionInfo
-  _imageLoading = false
+  hintsMode = false
+  viewPanelMode = false
+  viewContent: EditionInfo
+  imageLoading = false
 
   constructor (rootStore: RootStore) {
     this.rootStore = rootStore
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
   }
 
   setTheme (theme: ThemeT): void {
@@ -28,31 +28,20 @@ export default class UIStore {
     cookieCtrl.setTheme(theme)
   }
 
-  set hintsMode (value: boolean) {
-    this._hintsMode = value
-  }
-  get hintsMode (): boolean {
-    return this._hintsMode
+  setHintsMode (value: boolean): void {
+    this.hintsMode = value
   }
 
-  set viewPanelMode (value: boolean) {
-    this._viewPanelMode = value
-  }
-  get viewPanelMode (): boolean {
-    return this._viewPanelMode
+  setViewPanelMode (value: boolean): void {
+    this.viewPanelMode = value
   }
 
-  set viewContent (value: EditionInfo) {
-    this._viewContent = value
-  }
-  get viewContent (): EditionInfo {
-    return this._viewContent
+  setViewContent (value: EditionInfo): void {
+    this.viewContent = value
+    this.imageLoading = true
   }
 
-  set imageLoading (value: boolean) {
-    this._imageLoading = value
-  }
-  get imageLoading (): boolean {
-    return this._imageLoading
+  setImageLoading (value: boolean): void {
+    this.imageLoading = value
   }
 }

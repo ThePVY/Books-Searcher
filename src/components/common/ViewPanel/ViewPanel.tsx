@@ -1,9 +1,5 @@
-import selector from '@/redux/selectors'
-import { RootStateT } from '@/redux/store-redux'
-import { ThemeT } from '@/redux/theme-reducer'
 import { FC, MouseEventHandler } from 'react'
-import { useSelector } from 'react-redux'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css, DefaultTheme, keyframes } from 'styled-components'
 import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 
@@ -101,20 +97,17 @@ const ContentArea = styled(FlexContainer)`
   }
 `
 
-const LeafContainer = styled.div<{
-  dir: 'right' | 'left'
-  currentTheme: ThemeT
-}>`
-  ${({ currentTheme }) =>
-    currentTheme === 'main' &&
+const LeafContainer = styled.div<{ dir: 'right' | 'left' }>`
+  ${({ theme }) =>
+    theme.id === 'main' &&
     css`
       background-color: rgba(0, 0, 0, 0.06);
       &:hover {
         background-color: rgba(0, 0, 0, 0.2);
       }
     `};
-  ${({ currentTheme }) =>
-    currentTheme === 'dark' &&
+  ${({ theme }) =>
+    theme.id === 'dark' &&
     css`
       background-color: rgba(255, 255, 255, 0.04);
       &:hover {
@@ -154,16 +147,15 @@ const ViewPanel: FC<IViewPanelProps> = ({
   onClose,
   fixed = false
 }) => {
-  const currentTheme = useSelector((state: RootStateT) => selector.theme.getCurrentTheme(state))
   return (
     <>
       <ShadowDiv onClick={onClose} isShown={isShown} />
       <NullContainer hide={!fixed} isShown={isShown}>
         <ViewArea fixed={fixed}>
           <ContentArea jstfCnt="space-between" algnItems="center">
-            {multiple && <LeafContainer dir="left" currentTheme={currentTheme} onClick={onPrev} />}
+            {multiple && <LeafContainer dir="left" onClick={onPrev} />}
             <Div>{content}</Div>
-            {multiple && <LeafContainer dir="right" currentTheme={currentTheme} onClick={onNext} />}
+            {multiple && <LeafContainer dir="right" onClick={onNext} />}
           </ContentArea>
         </ViewArea>
       </NullContainer>

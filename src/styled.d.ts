@@ -14,6 +14,7 @@ interface IColorsSet {
 
 declare module 'styled-components' {
   export interface DefaultTheme {
+    id: 'main' | 'dark'
     colors: IColorsSet
   }
 }

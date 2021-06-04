@@ -1,6 +1,7 @@
 import { DefaultTheme } from "styled-components"
 
 export const mainTheme: DefaultTheme = {
+  id: "main",
   colors: {
     appBg: '#ececec',
     appFg: '#4e4e4e',
@@ -15,6 +16,7 @@ export const mainTheme: DefaultTheme = {
 }
 
 export const darkTheme: DefaultTheme = {
+  id: 'dark',
   colors: {
     appBg: '#2b2b2b',
     appFg: '#acacac',

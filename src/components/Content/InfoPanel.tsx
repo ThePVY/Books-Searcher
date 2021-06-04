@@ -1,13 +1,11 @@
-import { ItemTypeOf } from '@/types/common-types'
-import { FC, ReactEventHandler, useEffect, useState } from 'react'
+import { FC, ReactEventHandler, useState } from 'react'
 import styled from 'styled-components'
 import Div from '../common/Div'
 import FlexContainer from '../common/FlexContainer'
 import Image from '../common/Image'
-import { ContentPropsT } from './Content'
 import defaultCover from '@/images/default-cover.jpg'
 import Preloader from '../common/Preloader'
-import { Subscriber } from '@/utils/utils'
+import EditionInfo from '@/mobx/edition-info'
 
 const InfoPanelWrapper = styled.div`
   width: 100%;
@@ -85,14 +83,12 @@ const FlexInfoCell = styled(FlexContainer)`
   margin: 0.5rem 0;
 `
 
-interface IInfoPaneProps {
-  edition: ItemTypeOf<ContentPropsT['itemsOnPage']>
-  onSnippetClickSC: Subscriber
-  onNextClickSC: Subscriber
-  onPrevClickSC: Subscriber
+interface IInfoPanelProps {
+  edition: EditionInfo
+  imageLoading: boolean
 }
 
-const InfoPane: FC<IInfoPaneProps> = ({ edition, onSnippetClickSC, onNextClickSC, onPrevClickSC }) => {
+const InfoPanel: FC<IInfoPanelProps> = ({ edition }) => {
   const [srcState, setSrcState] = useState('')
   const imageSrc = srcState || edition?.largeCover
   const [isFetching, setIsFetching] = useState(true)
@@ -105,18 +101,6 @@ const InfoPane: FC<IInfoPaneProps> = ({ edition, onSnippetClickSC, onNextClickSC
     }
     setIsFetching(false)
   }
-
-  useEffect(() => {
-    const set = () => setIsFetching(true)
-    onSnippetClickSC.subscribe(set)
-    onNextClickSC.subscribe(set)
-    onPrevClickSC.subscribe(set)
-    return () => {
-      onSnippetClickSC.unsubscribe(set)
-      onNextClickSC.unsubscribe(set)
-      onPrevClickSC.unsubscribe(set)
-    }
-  }, [])
 
   return (
     <InfoPanelWrapper>
@@ -166,4 +150,4 @@ const InfoPane: FC<IInfoPaneProps> = ({ edition, onSnippetClickSC, onNextClickSC
   )
 }
 
-export default InfoPane
+export default InfoPanel

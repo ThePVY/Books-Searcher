@@ -1,4 +1,5 @@
 import { AppContext } from '@/index'
+import { observer } from 'mobx-react-lite'
 import { FC, useContext } from 'react'
 import styled from 'styled-components'
 import Preloader from '../common/Preloader'
@@ -22,17 +23,14 @@ const CenteringDiv = styled.div`
   transform: translate(-50%, -50%);
 `
 
-
-const Content: FC = () => {
-
+const Content: FC = observer(() => {
   const store = useContext(AppContext)
-
   return (
     <ContentWrapper>
       <SinglePane>
         <SearchForm store={store} />
         {!store.domainStore.searching ? (
-          <SearchList store={store} onPageClick={onPageClick} />
+          <SearchList store={store} />
         ) : (
           <CenteringDiv>
             <Preloader isFetching />
@@ -41,7 +39,7 @@ const Content: FC = () => {
       </SinglePane>
     </ContentWrapper>
   )
-}
+})
 
 
 export default Content

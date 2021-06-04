@@ -1,10 +1,12 @@
+import { RootStore } from '@/mobx/store'
 import { throttle } from '@/utils/utils'
 import { useFormik } from 'formik'
-import { FC, ReactEventHandler, useState } from 'react'
+import { runInAction } from 'mobx'
+import { observer } from 'mobx-react-lite'
+import { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
 import Div from '../common/Div'
 import Input from '../common/Input'
-import { ContentPropsT } from './Content'
 import HintsPanel from './HintsPanel'
 
 const SearchFormWrapper = styled.form`
@@ -21,44 +23,35 @@ const SearchInput = styled(Input).attrs({ className: searchInputClass })``
 let timeoutId: ReturnType<typeof setTimeout>
 
 interface IProps {
-  lastQuery: string
-  uniqueTitles: string[]
-  getAllBooks: ContentPropsT['getAllBooks']
-  hintsMode: boolean
-  setHintsMode: (value: boolean) => void
+  store: RootStore
 }
 
-const SearchForm: FC<IProps> = ({
-  getAllBooks,
-  hintsMode,
-  setHintsMode,
-  lastQuery = '',
-  uniqueTitles
-}) => {
+const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) => {
   const formik = useFormik({
-    initialValues: { search: lastQuery },
+    initialValues: { search: domainStore.lastQuery },
     onSubmit: values => {
-      getAllBooks(values.search)
+      domainStore.getAllBooks(values.search)
     }
   })
   const handleChange: ReactEventHandler<HTMLInputElement> = e => {
     formik.handleChange(e)
     clearTimeout(timeoutId)
-    setHintsMode(false)
+    uiStore.setHintsMode(false)
     const search = e.currentTarget.value
     if (search) {
       timeoutId = throttle(() => {
-        getAllBooks(search).then(() => setHintsMode(true))
+        runInAction(() =>
+          Promise.resolve(domainStore.getAllBooks(search)).then(() => uiStore.setHintsMode(true))
+        )
       }, 1000)
     }
   }
-  const handleFocus = () => setHintsMode(true)
+  const handleFocus = () => uiStore.setHintsMode(true)
   const onHintClick = (hint: string) => {
     formik.setValues({ search: hint })
-    setHintsMode(false)
-    getAllBooks(hint)
+    uiStore.setHintsMode(false)
+    domainStore.getAllBooks(hint)
   }
-  subscribeHint(() => setHintsMode(false))
   return (
     <SearchFormWrapper onSubmit={formik.handleSubmit}>
       <Div width='100%'>
@@ -72,12 +65,12 @@ const SearchForm: FC<IProps> = ({
         />
       </Div>
       <HintsPanel
-        isShown={formik.values.search && hintMode}
-        hints={uniqueTitles}
+        isShown={formik.values.search && uiStore.hintsMode}
+        hints={domainStore.uniqueTitles}
         onHintClick={onHintClick}
       />
     </SearchFormWrapper>
   )
-}
+})
 
 export default SearchForm

@@ -1,4 +1,4 @@
-import { Subscriber } from '@/utils/utils'
+import { IWrapperF } from '@/types/common-types'
 import { FC, useState } from 'react'
 import styled from 'styled-components'
 
@@ -47,14 +47,14 @@ const Slider = styled.div<{ mode: 'right' | 'left' }>`
 
 interface IProps extends IPosition {
   initialState: 'right' | 'left'
-  rightSC?: Subscriber
-  leftSC?: Subscriber
+  handleRight?: IWrapperF
+  handleLeft?: IWrapperF
 }
 
 const Switcher: FC<IProps> = ({
   initialState,
-  rightSC,
-  leftSC,
+  handleRight,
+  handleLeft,
   children,
   ...position
 }) => {
@@ -62,10 +62,10 @@ const Switcher: FC<IProps> = ({
   const handleSwitch = () => {
     if (switchMode === 'right') {
       setSwitchMode('left')
-      leftSC.callObservers()
+      handleLeft()
     } else {
       setSwitchMode('right')
-      rightSC.callObservers()
+      handleRight()
     }
   }
   return (

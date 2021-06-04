@@ -10,7 +10,7 @@ export function addToSessionStorage<T extends IObj>(data: T = {} as T): void {
 
 export const checkAndParse = (str: string): unknown => {
   const item = sessionStorage.getItem(str)
-  return item ? JSON.parse(item) : undefined
+  return item !== 'undefined' ? JSON.parse(item) : undefined
 }
 
 export function throttle(fn: () => void, ms: number): ReturnType<typeof setTimeout> {

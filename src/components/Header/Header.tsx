@@ -1,9 +1,7 @@
-import selector from '@/redux/selectors'
-import { AppDispatchT, RootStateT } from '@/redux/store-redux'
-import { actionCreator } from '@/redux/theme-reducer'
+import { AppContext } from '@/index'
 import { cookieCtrl } from '@/utils/ThemeCookie'
-import { FC, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { observer } from 'mobx-react-lite'
+import { FC, useContext } from 'react'
 import styled from 'styled-components'
 import Switcher from '../common/Switcher'
 
@@ -42,34 +40,20 @@ const ThemeSwitcher = styled(Switcher)`
 
 const initialState = cookieCtrl.getSwitcherInitialState()
 
-const Header: FC = () => {
-  const setMainThemeSC = useSelector((state: RootStateT) =>
-    selector.subscribeControllers.setMainTheme(state)
-  )
-  const setDarkThemeSC = useSelector((state: RootStateT) =>
-    selector.subscribeControllers.setDarkTheme(state)
-  )
-  const dispatch: AppDispatchT = useDispatch()
+const Header: FC = observer(() => {
+  const store = useContext(AppContext)
   const applyDarkTheme = () => {
-    dispatch(actionCreator.setCurrentTheme('dark'))
+    store.uiStore.setTheme('dark')
   }
   const applyMainTheme = () => {
-    dispatch(actionCreator.setCurrentTheme('main'))
+    store.uiStore.setTheme('main')
   }
-  useEffect(() => {
-    setMainThemeSC.subscribe(applyMainTheme)
-    setDarkThemeSC.subscribe(applyDarkTheme)
-    return () => {
-      setMainThemeSC.unsubscribe(applyMainTheme)
-      setDarkThemeSC.unsubscribe(applyDarkTheme)
-    }
-  })
   return (
     <Wrapper>
-      <ThemeSwitcher initialState={initialState} leftSC={setMainThemeSC} rightSC={setDarkThemeSC} />
+      <ThemeSwitcher initialState={initialState} handleLeft={applyMainTheme} handleRight={applyDarkTheme} />
       <Title>SEARCH BOOKS WITH EASE</Title>
     </Wrapper>
   )
-}
+})
 
 export default Header
