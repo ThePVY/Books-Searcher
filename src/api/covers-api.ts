@@ -1,12 +1,12 @@
-import axios from 'axios'
+import { openLibraryAxios } from './search-api'
 
 export interface CoverData {
   src: string
 }
 
 class CoversAPI {
-  getCover (isbn: string, size: 'S' | 'M' | 'L'): Promise<CoverData> {
-    return axios
+  getCover(isbn: string, size: 'S' | 'M' | 'L'): Promise<CoverData> {
+    return openLibraryAxios
       .get<CoverData>(getCoverUrl(isbn, size))
       .then(({ data }) => {
         return data

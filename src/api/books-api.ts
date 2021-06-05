@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { openLibraryAxios } from './search-api'
 
 export interface BookData {
   isbn: string
@@ -8,13 +8,13 @@ export interface BookData {
 }
 
 class BooksAPI {
-  getBook (isbn: string): Promise<BookData> {
-    return axios
+  getBook(isbn: string): Promise<BookData> {
+    return openLibraryAxios
       .get<BookData>(`http://openlibrary.org/isbn/${isbn}.json`)
       .then(({ data }) => {
         return data
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
         return null as BookData
       })

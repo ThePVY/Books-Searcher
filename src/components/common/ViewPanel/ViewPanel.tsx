@@ -1,5 +1,5 @@
 import { FC, MouseEventHandler } from 'react'
-import styled, { css, DefaultTheme, keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import Div from '../Div'
 import FlexContainer from '../FlexContainer'
 

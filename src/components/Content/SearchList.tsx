@@ -37,7 +37,7 @@ function booksNotFound (items: EditionInfo[], searchCount: number) {
 
 const SearchList: FC<IOwnProps> = observer(({ store }) => {
   const { itemsOnPage, pagesNum, currentPage, searchCount, lastQuery } = store.domainStore
-  const { viewPanelMode, viewContent } = store.uiStore
+  const { viewPanelMode, setViewContent } = store.uiStore
 
   const closeViewPanel = () => store.uiStore.setViewPanelMode(false)
 
@@ -50,10 +50,10 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
     return nextIdx === -1 ? itemsOnPage[itemsOnPage.length - 1] : itemsOnPage[nextIdx]
   }
   const onNextClick = () => {
-    store.uiStore.setViewContent(getNext(viewContent))
+    setViewContent(getNext(store.uiStore.viewContent))
   }
   const onPrevClick = () => {
-    store.uiStore.setViewContent(getPrev(viewContent))
+    setViewContent(getPrev(store.uiStore.viewContent))
   }
   const onPageClick = (page: number) => {
     store.domainStore.setCurrentPage(page)
@@ -70,7 +70,7 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
         <CenteringDiv>No books found on "{lastQuery}"</CenteringDiv>
       ) : (
         <FlexSearchList>
-          {itemsOnPage.map(item => {
+          {itemsOnPage.map((item) => {
             if (!item) return null
             const onSnippetClick = () => {
               store.uiStore.setViewContent(item)
@@ -84,7 +84,7 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
         <PagesList pagesCount={pagesNum} selectedPage={currentPage} onPageClick={onPageClick} />
       ) : null}
       <ViewPanel
-        content={<InfoPanel edition={viewContent} />}
+        content={<InfoPanel store={store} />}
         isShown={viewPanelMode}
         onClose={closeViewPanel}
         fixed

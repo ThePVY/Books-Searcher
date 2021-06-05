@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export interface SearchData {
   numFound: number
@@ -13,10 +13,12 @@ export interface DocData {
   author_name: string[]
 }
 
+export const openLibraryAxios = axios.create({ withCredentials: false })
+
 class SearchAPI {
-  getBooks (search: string): Promise<SearchData> {
+  getBooks(search: string): Promise<SearchData> {
     const queryString = search.split(' ').join('+')
-    return axios
+    return openLibraryAxios
       .get<SearchData>(`http://openlibrary.org/search.json?q=${queryString}`)
       .then(({ data }) => {
         return data

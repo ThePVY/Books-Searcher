@@ -6,7 +6,7 @@ class ThemeCookie {
   constructor() {
     this.getTheme = this.getTheme.bind(this)
     this.setTheme = this.setTheme.bind(this)
-    this.deleteTheme = this.deleteTheme.bind(this)
+    this.deleteThemes = this.deleteThemes.bind(this)
     this.getInialTheme = this.getInialTheme.bind(this)
   }
 
@@ -23,11 +23,12 @@ class ThemeCookie {
   }
 
   setTheme(theme: ThemeT) {
-    document.cookie = `currentTheme=${theme}; max-age=2592e3`
+    document.cookie = `currentTheme=${theme}; max-age=2592e3; SameSite=strict`
   }
 
-  deleteTheme() {
+  deleteThemes() {
     document.cookie = `currentTheme=main; max-age=0`
+    document.cookie = `currentTheme=dark; max-age=0`
   }
 
   getInialTheme(): DefaultTheme {

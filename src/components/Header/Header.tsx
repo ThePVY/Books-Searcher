@@ -50,7 +50,11 @@ const Header: FC = observer(() => {
   }
   return (
     <Wrapper>
-      <ThemeSwitcher initialState={initialState} handleLeft={applyMainTheme} handleRight={applyDarkTheme} />
+      <ThemeSwitcher
+        initialState={initialState}
+        handleLeft={applyMainTheme}
+        handleRight={applyDarkTheme}
+      />
       <Title>SEARCH BOOKS WITH EASE</Title>
     </Wrapper>
   )

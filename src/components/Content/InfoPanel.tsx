@@ -5,7 +5,8 @@ import FlexContainer from '../common/FlexContainer'
 import Image from '../common/Image'
 import defaultCover from '@/images/default-cover.jpg'
 import Preloader from '../common/Preloader'
-import EditionInfo from '@/mobx/edition-info'
+import { RootStore } from '@/mobx/store'
+import { observer } from 'mobx-react-lite'
 
 const InfoPanelWrapper = styled.div`
   width: 100%;
@@ -84,70 +85,68 @@ const FlexInfoCell = styled(FlexContainer)`
 `
 
 interface IInfoPanelProps {
-  edition: EditionInfo
-  imageLoading: boolean
+  store: RootStore
 }
 
-const InfoPanel: FC<IInfoPanelProps> = ({ edition }) => {
+const InfoPanel: FC<IInfoPanelProps> = observer(({ store }) => {
+  const { viewContent, imageLoading, setImageLoading } = store.uiStore
   const [srcState, setSrcState] = useState('')
-  const imageSrc = srcState || edition?.largeCover
-  const [isFetching, setIsFetching] = useState(true)
-  const checkSize: ReactEventHandler<HTMLImageElement> = e => {
+  const imageSrc = srcState || viewContent?.largeCover
+  const checkSize: ReactEventHandler<HTMLImageElement> = (e) => {
     if (e.currentTarget.naturalWidth < 10) {
       setSrcState(defaultCover)
+    } else {
+      setSrcState(viewContent?.largeCover)
     }
-    else {
-      setSrcState(edition?.largeCover)
-    }
-    setIsFetching(false)
+    setImageLoading(false)
   }
 
   return (
     <InfoPanelWrapper>
       <ImageWrapper>
-        {isFetching ? (
+        {imageLoading ? (
           <>
             <Preloader isFetching />
-            <img onLoad={checkSize} src={edition?.largeCover} alt='' hidden />
+            <img onLoad={checkSize} src={viewContent?.largeCover} alt="" hidden />
           </>
         ) : (
-          <Image src={imageSrc} alt='' />
+          <Image src={imageSrc} alt="" />
         )}
       </ImageWrapper>
       <FlexInfo>
         <FlexInfoCell>
-          <Div width='4rem'>Author:</Div>
-          <div>{edition?.author}</div>
+          <Div width="4rem">Author:</Div>
+          <div>{viewContent?.author}</div>
         </FlexInfoCell>
         <hr />
         <FlexInfoCell>
-          <Div width='4rem'>Title:</Div>
-          <div>{edition?.title}</div>
+          <Div width="4rem">Title:</Div>
+          <div>{viewContent?.title}</div>
         </FlexInfoCell>
         <hr />
         <FlexInfoCell>
-          <Div width='4rem'>Pages:</Div>
-          <div>{edition?.number_of_pages}</div>
+          <Div width="4rem">Pages:</Div>
+          <div>{viewContent?.number_of_pages}</div>
         </FlexInfoCell>
         <hr />
         <FlexInfoCell>
-          <Div width='4rem'>Publisher:</Div>
-          <div>{edition?.publishers}</div>
+          <Div width="4rem">Publisher:</Div>
+          <div>{viewContent?.publishers}</div>
         </FlexInfoCell>
         <hr />
         <FlexInfoCell>
-          <Div width='4rem'>Publish date:</Div>
-          <div>{edition?.publish_date}</div>
+          <Div width="4rem">Publish date:</Div>
+          <div>{viewContent?.publish_date}</div>
         </FlexInfoCell>
         <hr />
         <FlexInfoCell>
-          <Div width='4rem'>ISBN:</Div>
-          <div>{edition?.isbn}</div>
+          <Div width="4rem">ISBN:</Div>
+          <div>{viewContent?.isbn}</div>
         </FlexInfoCell>
         <hr />
       </FlexInfo>
     </InfoPanelWrapper>
   )
-}
+})
 
 export default InfoPanel
