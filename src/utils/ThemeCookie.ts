@@ -1,4 +1,4 @@
-import { ThemeT } from '@/redux/theme-reducer'
+import { ThemeT } from '@/mobx/ui-store'
 import { darkTheme, mainTheme } from '@/themes'
 import { DefaultTheme } from 'styled-components'
 

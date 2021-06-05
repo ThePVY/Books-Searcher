@@ -1,5 +1,4 @@
 import { RootStore } from '@/mobx/store'
-import { throttle } from '@/utils/utils'
 import { useFormik } from 'formik'
 import { runInAction } from 'mobx'
 import { observer } from 'mobx-react-lite'
@@ -29,19 +28,21 @@ interface IProps {
 const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) => {
   const formik = useFormik({
     initialValues: { search: domainStore.lastQuery },
-    onSubmit: values => {
+    onSubmit: (values) => {
       domainStore.getAllBooks(values.search)
     }
   })
-  const handleChange: ReactEventHandler<HTMLInputElement> = e => {
+  const handleChange: ReactEventHandler<HTMLInputElement> = (e) => {
     formik.handleChange(e)
     clearTimeout(timeoutId)
     uiStore.setHintsMode(false)
     const search = e.currentTarget.value
     if (search) {
-      timeoutId = throttle(() => {
+      timeoutId = setTimeout(() => {
         runInAction(() =>
-          Promise.resolve(domainStore.getAllBooks(search)).then(() => uiStore.setHintsMode(true))
+          Promise.resolve(domainStore.getAllBooks(search)).then(() => {
+            uiStore.setHintsMode(true)
+          })
         )
       }, 1000)
     }
@@ -54,10 +55,10 @@ const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) =>
   }
   return (
     <SearchFormWrapper onSubmit={formik.handleSubmit}>
-      <Div width='100%'>
+      <Div width="100%">
         <SearchInput
-          type='search'
-          name='search'
+          type="search"
+          name="search"
           value={formik.values.search}
           onChange={handleChange}
           onFocus={handleFocus}

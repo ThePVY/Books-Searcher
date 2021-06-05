@@ -7,6 +7,7 @@ import { hintClassName } from './components/Content/HintsPanel'
 import { searchInputClass } from './components/Content/SearchForm'
 import { AppContext } from '.'
 import { cookieCtrl } from './utils/ThemeCookie'
+import { Route, Switch } from 'react-router'
 
 const AppWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.appBg};
@@ -38,7 +39,10 @@ const App: FC = () => {
   return (
     <AppWrapper onClick={handleClick}>
       <Header />
-      <Content />
+      <Switch>
+        <Route exact path="/" render={() => <Content />} />
+        <Route path="/:book/page" render={() => <Content />} />
+      </Switch>
       <Footer />
     </AppWrapper>
   )
