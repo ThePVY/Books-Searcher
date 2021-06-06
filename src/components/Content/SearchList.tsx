@@ -31,7 +31,7 @@ interface IOwnProps {
   store: RootStore
 }
 
-function booksNotFound (items: EditionInfo[], searchCount: number) {
+function booksNotFound(items: EditionInfo[], searchCount: number) {
   return !items.length && searchCount
 }
 
@@ -56,8 +56,7 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
     setViewContent(getPrev(store.uiStore.viewContent))
   }
   const onPageClick = (page: number) => {
-    store.domainStore.setCurrentPage(page)
-    store.domainStore.getAdditionalInfo()
+    store.domainStore.historyCtrl.getBooksOnPage(page)
   }
 
   return (

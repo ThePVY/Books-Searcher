@@ -39,11 +39,7 @@ const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) =>
     const search = e.currentTarget.value
     if (search) {
       timeoutId = setTimeout(() => {
-        runInAction(() =>
-          Promise.resolve(domainStore.getAllBooks(search)).then(() => {
-            uiStore.setHintsMode(true)
-          })
-        )
+        runInAction(() => domainStore.historyCtrl.startSearch(search))
       }, 1000)
     }
   }

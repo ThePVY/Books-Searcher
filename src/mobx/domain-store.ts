@@ -2,24 +2,24 @@ import booksAPI, { BookData } from '@/api/books-api'
 import { getCoverUrl } from '@/api/covers-api'
 import searchAPI, { SearchData } from '@/api/search-api'
 import { checkAndParse, addToSessionStorage } from '@/utils/utils'
-import { createBrowserHistory } from 'history'
 import { autorun, flow, makeAutoObservable } from 'mobx'
 import EditionInfo, { IBooksInfo } from './edition-info'
+import HistoryController from './historyController'
 import { RootStore } from './store'
 
 export default class DomainStore {
   rootStore: RootStore
-  history = createBrowserHistory()
+  historyCtrl: HistoryController = null
   allBooks = (checkAndParse('allBooks') || []) as EditionInfo[]
   pageSize = 20
   currentPage = (checkAndParse('currentPage') || 1) as number
   searching = false
   lastQuery = (checkAndParse('lastQuery') || '') as string
   searchCount = (checkAndParse('searchCount') || 0) as number
-  unlisten
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
+    this.historyCtrl = new HistoryController(rootStore)
     makeAutoObservable(
       this,
       {
@@ -37,17 +37,9 @@ export default class DomainStore {
         itemsOnPage: this.itemsOnPage
       })
     )
-    this.unlisten = this.history.listen(({ location }) => {
-      const [, book, page] = decodeURI(location.pathname).split('/')
-      console.log(book)
-      console.log(page)
-      Promise.resolve(this.getAllBooks(book)).then(() => {
-        this.rootStore.uiStore.setHintsMode(true)
-      })
-    })
   }
 
-  *getAllBooks(search: string): Generator<Promise<SearchData>, void, SearchData> {
+  *getAllBooks(search: string, page = 1): Generator<Promise<SearchData>, void, SearchData> {
     this.searching = true
     this.searchCount += 1
     try {
@@ -55,7 +47,7 @@ export default class DomainStore {
       this.lastQuery = search
       this.searching = false
       this.allBooks = retrieveBooksInfo(searchData)
-      this.setCurrentPage(1)
+      this.setCurrentPage(page)
       this.getAdditionalInfo()
     } catch (err) {
       this.lastQuery = search
@@ -111,13 +103,6 @@ export default class DomainStore {
     }
     const sessionItems = checkAndParse('itemsOnPage') as EditionInfo[]
     return itemsOnPage.length ? itemsOnPage : sessionItems || []
-  }
-
-  setHistoryPath(search: string, page: number): string {
-    if (search) {
-      return `http://localhost:3000/${search}/${page}`
-    }
-    return `http://localhost:3000`
   }
 }
 
