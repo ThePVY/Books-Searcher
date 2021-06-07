@@ -7,7 +7,6 @@ import { hintClassName } from './components/Content/HintsPanel'
 import { searchInputClass } from './components/Content/SearchForm'
 import { AppContext } from '.'
 import { cookieCtrl } from './utils/ThemeCookie'
-import { Route, Switch } from 'react-router'
 
 const AppWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.appBg};
@@ -29,7 +28,6 @@ const AppWrapper = styled.div`
 const App: FC = () => {
   console.log('App rendered')
   const uiStore = useContext(AppContext).uiStore
-  cookieCtrl.deleteThemes()
   const handleClick: ReactEventHandler<HTMLDivElement> = (e) => {
     const { classList } = e.target as HTMLDivElement
     if (!classList.contains(hintClassName) && !classList.contains(searchInputClass)) {
@@ -39,10 +37,7 @@ const App: FC = () => {
   return (
     <AppWrapper onClick={handleClick}>
       <Header />
-      <Switch>
-        <Route exact path="/" render={() => <Content />} />
-        <Route path="/:book/page" render={() => <Content />} />
-      </Switch>
+      <Content />
       <Footer />
     </AppWrapper>
   )

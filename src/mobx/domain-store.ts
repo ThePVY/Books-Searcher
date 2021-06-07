@@ -4,12 +4,10 @@ import searchAPI, { SearchData } from '@/api/search-api'
 import { checkAndParse, addToSessionStorage } from '@/utils/utils'
 import { autorun, flow, makeAutoObservable } from 'mobx'
 import EditionInfo, { IBooksInfo } from './edition-info'
-import HistoryController from './historyController'
 import { RootStore } from './store'
 
 export default class DomainStore {
   rootStore: RootStore
-  historyCtrl: HistoryController = null
   allBooks = (checkAndParse('allBooks') || []) as EditionInfo[]
   pageSize = 20
   currentPage = (checkAndParse('currentPage') || 1) as number
@@ -19,7 +17,6 @@ export default class DomainStore {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
-    this.historyCtrl = new HistoryController(rootStore)
     makeAutoObservable(
       this,
       {
@@ -78,6 +75,10 @@ export default class DomainStore {
 
   setSearching(value: boolean): void {
     this.searching = value
+  }
+
+  getItem(isbn: string): EditionInfo {
+    return this.itemsOnPage.find((item) => item.isbn === isbn)
   }
 
   get uniqueTitles(): string[] {

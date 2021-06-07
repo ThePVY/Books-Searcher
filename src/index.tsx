@@ -6,7 +6,6 @@ import {} from 'styled-components/cssprop'
 import App from './App'
 import rootStore from './mobx/store'
 import { observer } from 'mobx-react-lite'
-import { BrowserRouter } from 'react-router-dom'
 
 const GlobalStyles = createGlobalStyle`
     * {
@@ -32,14 +31,12 @@ const GlobalStyles = createGlobalStyle`
 export const AppContext = createContext(rootStore)
 
 const RootContainer: FC = observer(() => (
-  <BrowserRouter>
     <AppContext.Provider value={rootStore}>
       <ThemeProvider theme={rootStore.uiStore.currentTheme}>
         <App />
         <GlobalStyles />
       </ThemeProvider>
     </AppContext.Provider>
-  </BrowserRouter>
 ))
 
 const render = (Component: FC) => {

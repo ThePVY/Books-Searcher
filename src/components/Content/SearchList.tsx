@@ -39,7 +39,10 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
   const { itemsOnPage, pagesNum, currentPage, searchCount, lastQuery } = store.domainStore
   const { viewPanelMode, setViewContent } = store.uiStore
 
-  const closeViewPanel = () => store.uiStore.setViewPanelMode(false)
+  const closeViewPanel = () => {
+    store.uiStore.setViewPanelMode(false)
+    store.historyCtrl.deleteISBN()
+  }
 
   const getNext = (item: EditionInfo): EditionInfo => {
     const nextIdx = itemsOnPage.indexOf(item) + 1
@@ -50,14 +53,16 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
     return nextIdx === -1 ? itemsOnPage[itemsOnPage.length - 1] : itemsOnPage[nextIdx]
   }
   const onNextClick = () => {
-    setViewContent(getNext(store.uiStore.viewContent))
+    const nextItem = getNext(store.uiStore.viewContent)
+    setViewContent(nextItem)
+    store.historyCtrl.setISBN(nextItem.isbn)
   }
   const onPrevClick = () => {
-    setViewContent(getPrev(store.uiStore.viewContent))
+    const prevItem = getPrev(store.uiStore.viewContent)
+    setViewContent(prevItem)
+    store.historyCtrl.setISBN(prevItem.isbn)
   }
-  const onPageClick = (page: number) => {
-    store.domainStore.historyCtrl.getBooksOnPage(page)
-  }
+  const onPageClick = (page: number) => store.historyCtrl.getBooksOnPage(page)
 
   return (
     <>
@@ -74,6 +79,7 @@ const SearchList: FC<IOwnProps> = observer(({ store }) => {
             const onSnippetClick = () => {
               store.uiStore.setViewContent(item)
               store.uiStore.setViewPanelMode(true)
+              store.historyCtrl.setISBN(item.isbn)
             }
             return <BookSnippet key={item.isbn} onClick={onSnippetClick} editionInfo={item} />
           })}

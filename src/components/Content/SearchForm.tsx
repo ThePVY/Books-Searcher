@@ -25,9 +25,9 @@ interface IProps {
   store: RootStore
 }
 
-const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) => {
+const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore, historyCtrl} }) => {
   const formik = useFormik({
-    initialValues: { search: domainStore.lastQuery },
+    initialValues: { search: domainStore.lastQuery || historyCtrl.book },
     onSubmit: (values) => {
       domainStore.getAllBooks(values.search)
     }
@@ -39,7 +39,7 @@ const SearchForm: FC<IProps> = observer(({ store: { domainStore, uiStore } }) =>
     const search = e.currentTarget.value
     if (search) {
       timeoutId = setTimeout(() => {
-        runInAction(() => domainStore.historyCtrl.startSearch(search))
+        runInAction(() => historyCtrl.startSearch(search))
       }, 1000)
     }
   }
